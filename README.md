@@ -82,7 +82,8 @@ Details and the full license notes are in [`samples/CREDITS.md`](samples/CREDITS
   rimshot in the Metal kit and a clap in Electro. See [Samples](#samples).
 - **Kit view**: the drums from above, each outlined in its colour and lighting up in it as
   it plays (brightest for accents); press a piece to play it (shift-press the hi-hat for an
-  open hat). *View: Kit* hides it, and the grid takes the whole width.
+  open hat). The kit picker sits on top of it. *View: Kit* hides the view (the picker
+  moves to the toolbar), and the grid takes the whole width.
 - The grid's cells grow to fill its screen, in width and (on wide screens) height.
 - **Rhythms**: 31 prepared grooves in four groups, each loading with its genre's kit and
   tempo: rock & pop, metal (with double bass split between the feet), jazz & latin (swing,

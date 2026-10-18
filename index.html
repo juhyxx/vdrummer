@@ -43,7 +43,7 @@
     </div>
   </header>
 
-  <div class="toolbar">
+  <div class="toolbar" id="toolbar">
     <button id="play" class="btn start" type="button">Play</button>
 
     <div class="module">
@@ -54,12 +54,7 @@
       </div>
     </div>
 
-    <div class="module" role="radiogroup" aria-labelledby="kitLabel">
-      <span class="module-label" id="kitLabel">Kit</span>
-      <div class="module-row seg" id="kits"></div>
-    </div>
-
-    <div class="module rhythm">
+    <div class="module rhythm" id="rhythmModule">
       <label class="module-label" for="rhythm">Rhythm</label>
       <div class="module-row">
         <select id="rhythm"></select>
@@ -141,7 +136,12 @@
   </div>
 
   <main class="stage" id="stage">
-    <section class="screen kit-screen" aria-label="Drum kit seen from above">
+    <section class="screen kit-screen" id="kitScreen" aria-label="Drum kit seen from above">
+      <!-- the kit picker sits on the kit view; main.js moves it to the toolbar when the view is hidden -->
+      <div class="module kit-picker" id="kitPicker" role="radiogroup" aria-labelledby="kitLabel">
+        <span class="module-label" id="kitLabel">Kit</span>
+        <div class="module-row seg" id="kits"></div>
+      </div>
       <svg id="kit"></svg>
     </section>
     <section class="screen grid-screen" aria-label="Pattern">

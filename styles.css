@@ -314,8 +314,10 @@ input[type="range"]::-moz-range-thumb {
 
 /* ------------------------------------------------------------- kit view */
 
-.kit-screen { min-height: 240px; }
-#kit { position: absolute; inset: 12px; width: calc(100% - 24px); height: calc(100% - 24px); overflow: visible; }
+.kit-screen { display: flex; flex-direction: column; min-height: 300px; }
+.kit-screen .kit-picker { position: relative; z-index: 1; align-items: center; padding: 14px 14px 0; }
+.kit-screen .kit-picker .module-label { display: none; } /* the view itself says what it picks */
+#kit { flex: 1; min-height: 0; width: calc(100% - 24px); margin: 4px 12px 12px; overflow: visible; }
 
 .kit-base .piece { cursor: pointer; }
 #kit[data-kicks="2"] .kicks-1, #kit:not([data-kicks="2"]) .kicks-2 { display: none; }
@@ -346,7 +348,7 @@ input[type="range"]::-moz-range-thumb {
 .grid {
   --cw: 26px;   /* cell width, set by grid.js to fill the screen */
   --ch: 26px;
-  --label-w: 104px;
+  --label-w: max-content; /* as wide as the longest instrument name */
   position: relative;
   display: grid;
   grid-template-columns: var(--label-w) repeat(var(--steps), var(--cw));
@@ -504,7 +506,7 @@ dialog input[hidden] { display: none; }
 /* ------------------------------------------------------------- small screens */
 
 @media (max-width: 960px) {
-  .stage { grid-template-columns: minmax(0, 1fr); grid-template-rows: 260px auto; }
+  .stage { grid-template-columns: minmax(0, 1fr); grid-template-rows: 300px auto; }
   .stage.no-kit { grid-template-rows: auto; }
   .scroller { position: relative; }
 }
@@ -515,12 +517,14 @@ dialog input[hidden] { display: none; }
   .toolbar { gap: 10px 16px; padding: 4px 16px 10px; }
   .toolbar.edit { gap: 10px 14px; }
   .module { gap: 4px; }
-  .stage { gap: 10px; margin: 0 8px 8px; grid-template-rows: 220px auto; }
+  .stage { gap: 10px; margin: 0 8px 8px; grid-template-rows: 270px auto; }
+  .kit-screen { min-height: 270px; }
+  .kit-screen .kit-picker { padding: 10px 10px 0; }
   .screen { border-radius: 10px; }
   input[type="range"] { width: 110px; }
   select { max-width: 200px; }
   .rhythm { flex: 1 1 100%; min-width: 0; }
   .rhythm select { flex: 1 1 auto; width: 100px; max-width: none; } /* a set width, so the longest option can't widen the row */
   .rhythm .btn { padding: 0 12px; }
-  .grid { --ch: 30px; --label-w: 92px; }
+  .grid { --ch: 30px; }
 }

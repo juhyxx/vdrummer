@@ -46,6 +46,10 @@ const els = {
   midi: $('midi'),
   showKit: $('showKit'),
   stage: $('stage'),
+  toolbar: $('toolbar'),
+  rhythmModule: $('rhythmModule'),
+  kitScreen: $('kitScreen'),
+  kitPicker: $('kitPicker'),
   readout: $('readout'),
   bpm: $('bpm'),
   pos: $('pos'),
@@ -604,6 +608,9 @@ els.midi.addEventListener('click', exportMidi);
 function showKitView() {
   els.showKit.checked = settings.showKit;
   els.stage.classList.toggle('no-kit', !settings.showKit);
+  // The kit picker sits on the kit view; while the view is hidden it waits in the toolbar.
+  if (settings.showKit) els.kitScreen.prepend(els.kitPicker);
+  else els.toolbar.insertBefore(els.kitPicker, els.rhythmModule);
 }
 
 els.showKit.addEventListener('change', () => {
