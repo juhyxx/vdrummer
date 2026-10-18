@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 812 122" width="812" height="122">
+  <title>vdrummer</title>
+  <style>
+    .word { stroke: #1b1f27; }
+    @media (prefers-color-scheme: dark) { .word { stroke: #e6e9ef; } }
+  </style>
+  <g transform="scale(.234375)">
+    <defs>
+      <radialGradient id="sheen" cx="0" cy="0" r="1">
+        <stop offset="0" stop-color="#fff" stop-opacity=".1"/>
+        <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+      </radialGradient>
+      <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter>
+      <g id="lit" fill="#abff2e">
+        <rect x="92" y="136" width="64" height="64" rx="12"/>
+        <rect x="180" y="136" width="64" height="64" rx="12"/>
+        <rect x="268" y="136" width="64" height="64" rx="12"/>
+        <rect x="356" y="136" width="64" height="64" rx="12"/>
+        <rect x="92" y="312" width="64" height="64" rx="12"/>
+        <rect x="268" y="312" width="64" height="64" rx="12"/>
+      </g>
+      <g id="accent" fill="#ffc72e">
+        <rect x="180" y="224" width="64" height="64" rx="12"/>
+        <rect x="356" y="224" width="64" height="64" rx="12"/>
+      </g>
+    </defs>
+    <rect width="512" height="512" rx="112" fill="#1c1c1c"/>
+    <rect width="512" height="512" rx="112" fill="url(#sheen)"/>
+    <!-- playhead -->
+    <rect x="256" y="112" width="88" height="288" rx="24" fill="#fff" fill-opacity=".07"/>
+    <!-- pads: hi-hat, snare and kick rows of a backbeat -->
+    <g fill="#fff" fill-opacity=".08">
+      <rect x="92" y="224" width="64" height="64" rx="12"/>
+      <rect x="268" y="224" width="64" height="64" rx="12"/>
+      <rect x="180" y="312" width="64" height="64" rx="12"/>
+      <rect x="356" y="312" width="64" height="64" rx="12"/>
+    </g>
+    <use href="#lit" filter="url(#glow)" opacity=".8"/>
+    <use href="#accent" filter="url(#glow)" opacity=".8"/>
+    <use href="#lit"/>
+    <use href="#accent"/>
+    <!-- the pads under the playhead are sounding -->
+    <g fill="#e4ffbf">
+      <rect x="284" y="152" width="32" height="32" rx="6"/>
+      <rect x="284" y="328" width="32" height="32" rx="6"/>
+    </g>
+  </g>
+  <g class="word" transform="translate(148 -12)" fill="none" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 44L34 100L62 44"/>
+    <circle cx="114" cy="72" r="28"/>
+    <path d="M142 20V100"/>
+    <path d="M166 100V44M166 72a28 28 0 0 1 28-28H200"/>
+    <path d="M224 44V72a28 28 0 0 0 56 0M280 44V100"/>
+    <path d="M304 100V44M304 68a24 24 0 0 1 48 0V100M352 68a24 24 0 0 1 48 0V100"/>
+    <path d="M424 100V44M424 68a24 24 0 0 1 48 0V100M472 68a24 24 0 0 1 48 0V100"/>
+    <path d="M544 72H600A28 28 0 1 0 591.8 91.8"/>
+    <path d="M624 100V44M624 72a28 28 0 0 1 28-28H658"/>
+  </g>
+  <circle cx="262" cy="60" r="10" fill="#abff2e"/>
+</svg>

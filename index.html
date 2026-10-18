@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>vdrummer</title>
+  <meta name="description" content="Virtual drummer: program grooves on a step grid and watch them played on a drum kit.">
+  <meta name="theme-color" content="#1c1c1c">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preload" href="fonts/Silkscreen-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="src/main.js"></script>
+</head>
+<body>
+  <header class="top">
+    <h1 class="brand">
+      <img class="brand-mark" src="icons/icon.svg" alt="">
+      <svg class="brand-word" viewBox="0 12 664 122" role="img" aria-label="vdrummer">
+        <g fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 44L34 100L62 44"/>
+          <circle cx="114" cy="72" r="28"/>
+          <path d="M142 20V100"/>
+          <path d="M166 100V44M166 72a28 28 0 0 1 28-28H200"/>
+          <path d="M224 44V72a28 28 0 0 0 56 0M280 44V100"/>
+          <path d="M304 100V44M304 68a24 24 0 0 1 48 0V100M352 68a24 24 0 0 1 48 0V100"/>
+          <path d="M424 100V44M424 68a24 24 0 0 1 48 0V100M472 68a24 24 0 0 1 48 0V100"/>
+          <path d="M544 72H600A28 28 0 1 0 591.8 91.8"/>
+          <path d="M624 100V44M624 72a28 28 0 0 1 28-28H658"/>
+        </g>
+        <circle class="brand-dot" id="brandDot" cx="114" cy="72" r="10"/>
+      </svg>
+    </h1>
+
+    <div class="readout idle" id="readout">
+      <div class="lcd"><span class="bpm" id="bpm">120</span></div>
+      <div class="readout-side">
+        <span class="unit">BPM</span>
+        <span class="pos" id="pos">Bar -</span>
+        <div class="leds beat-leds" id="beatLeds" title="Beats of the bar"></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <button id="play" class="btn start" type="button">Play</button>
+
+    <div class="module">
+      <label class="module-label" for="tempo">Tempo <output id="tempoValue"></output></label>
+      <div class="module-row">
+        <input type="range" id="tempo" min="40" max="260" step="1">
+        <button id="tap" class="btn" type="button" title="Tap the beat a few times to set the tempo">Tap</button>
+      </div>
+    </div>
+
+    <div class="module" role="radiogroup" aria-labelledby="kitLabel">
+      <span class="module-label" id="kitLabel">Kit</span>
+      <div class="module-row seg" id="kits"></div>
+    </div>
+
+    <div class="module rhythm">
+      <label class="module-label" for="rhythm">Rhythm</label>
+      <div class="module-row">
+        <select id="rhythm"></select>
+        <button id="save" class="btn" type="button" title="Save this rhythm in the browser">Save</button>
+        <button id="remove" class="btn" type="button" title="Delete this saved rhythm">Delete</button>
+      </div>
+    </div>
+
+    <label class="module">
+      <span class="module-label">Volume <output id="volumeValue"></output></span>
+      <input type="range" id="volume" min="0" max="100" step="1">
+    </label>
+  </div>
+
+  <div class="toolbar edit">
+    <label class="module">
+      <span class="module-label">Meter</span>
+      <select id="meter"></select>
+    </label>
+
+    <label class="module">
+      <span class="module-label">Steps</span>
+      <select id="division"></select>
+    </label>
+
+    <div class="module" role="group" aria-labelledby="barsLabel">
+      <span class="module-label" id="barsLabel">Bars</span>
+      <div class="module-row stepper">
+        <button id="barsDown" class="btn icon" type="button" aria-label="Fewer bars">-</button>
+        <output id="bars" class="count-lcd">1</output>
+        <button id="barsUp" class="btn icon" type="button" aria-label="More bars">+</button>
+      </div>
+    </div>
+
+    <div class="module">
+      <label class="module-label" for="swing">Swing <output id="swingValue"></output></label>
+      <input type="range" id="swing" min="0" max="100" step="1">
+    </div>
+
+    <div class="module" role="radiogroup" aria-labelledby="levelLabel">
+      <span class="module-label" id="levelLabel">Hit</span>
+      <div class="module-row seg" id="levels"></div>
+    </div>
+
+    <div class="module" role="group" aria-labelledby="barLabel">
+      <span class="module-label" id="barLabel">Bar <output id="selBar">1</output></span>
+      <div class="module-row">
+        <button id="copyBar" class="btn" type="button" title="Copy the selected bar over all the other bars">Copy to all</button>
+        <button id="clearBar" class="btn" type="button" title="Clear the selected bar">Clear</button>
+      </div>
+    </div>
+
+    <div class="module" role="group" aria-label="History">
+      <span class="module-label">Edit</span>
+      <div class="module-row">
+        <button id="undo" class="btn" type="button" title="Undo (Ctrl+Z)">Undo</button>
+        <button id="redo" class="btn" type="button" title="Redo (Ctrl+Shift+Z)">Redo</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="stage">
+    <section class="screen kit-screen" aria-label="Drum kit seen from above">
+      <svg id="kit"></svg>
+    </section>
+    <section class="screen grid-screen" aria-label="Pattern">
+      <div class="scroller" id="gridScroller"></div>
+    </section>
+  </main>
+
+  <dialog id="dialog">
+    <form method="dialog">
+      <p id="dialogText"></p>
+      <input id="dialogInput" type="text" maxlength="40" autocomplete="off" spellcheck="false" aria-labelledby="dialogText">
+      <div class="dialog-buttons">
+        <button class="btn" value="cancel" type="submit" formnovalidate>Cancel</button>
+        <button class="btn lit" value="ok" type="submit" id="dialogOk">OK</button>
+      </div>
+    </form>
+  </dialog>
+  <div class="toast" id="toast" role="status" hidden></div>
+</body>
+</html>
