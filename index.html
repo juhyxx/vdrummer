@@ -55,11 +55,17 @@
     </div>
 
     <div class="module rhythm" id="rhythmModule">
-      <label class="module-label" for="rhythm">Rhythm</label>
+      <span class="module-label" id="rhythmLabel">Rhythm</span>
       <div class="module-row">
-        <select id="rhythm"></select>
-        <button id="save" class="btn" type="button" title="Save this rhythm in the browser">Save</button>
-        <button id="remove" class="btn" type="button" title="Delete this saved rhythm">Delete</button>
+        <div class="module-row seg rhythm-pick">
+          <button id="prevRhythm" class="btn icon prev" type="button" aria-label="Previous rhythm" title="Previous rhythm"></button>
+          <button id="rhythm" class="picker" type="button" popovertarget="rhythmPanel" aria-labelledby="rhythmLabel rhythmName"><span id="rhythmName"></span></button>
+          <button id="nextRhythm" class="btn icon next" type="button" aria-label="Next rhythm" title="Next rhythm"></button>
+        </div>
+        <div class="module-row seg">
+          <button id="save" class="btn" type="button" title="Save this rhythm in the browser">Save</button>
+          <button id="remove" class="btn" type="button" title="Delete this saved rhythm">Delete</button>
+        </div>
       </div>
     </div>
 
@@ -109,7 +115,7 @@
 
     <div class="module" role="group" aria-label="History">
       <span class="module-label">Edit</span>
-      <div class="module-row">
+      <div class="module-row seg">
         <button id="undo" class="btn" type="button" title="Undo (Ctrl+Z)">Undo</button>
         <button id="redo" class="btn" type="button" title="Redo (Ctrl+Shift+Z)">Redo</button>
       </div>
@@ -143,6 +149,9 @@
       <div class="scroller" id="gridScroller"></div>
     </section>
   </main>
+
+  <!-- the rhythms, by genre; opens under the Rhythm picker (placed by main.js) -->
+  <div class="rhythm-panel" id="rhythmPanel" popover aria-label="Rhythms"></div>
 
   <dialog id="dialog">
     <form method="dialog">

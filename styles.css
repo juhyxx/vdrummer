@@ -203,7 +203,7 @@ body {
 .seg .btn:first-child { border-radius: 2rem 4px 4px 2rem; padding-left: 16px; }
 .seg .btn:last-child { border-radius: 4px 2rem 2rem 4px; padding-right: 16px; }
 
-select {
+select, .picker {
   appearance: none;
   min-height: 36px;
   max-width: 240px;
@@ -217,8 +217,67 @@ select {
   text-overflow: ellipsis;
   cursor: pointer;
 }
-select:focus-visible { outline: 1px solid var(--led); outline-offset: 2px; }
+select:focus-visible, .picker:focus-visible { outline: 1px solid var(--led); outline-offset: 2px; }
 option, optgroup { background: #1c1c1c; color: #ddd; }
+
+/* the Rhythm picker: a button that looks like the selects and opens the rhythm panel */
+.picker { display: flex; align-items: center; width: 220px; text-align: left; text-shadow: inherit; }
+.picker span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.picker:hover, body:has(.rhythm-panel:popover-open) .picker { color: var(--led); text-shadow: 0 0 5px var(--led); }
+.seg .picker { border-radius: 4px; } /* between the arrows */
+.rhythm-pick .btn.icon { width: 40px; padding: 0; }
+.btn.prev::before, .btn.next::before {
+  content: "";
+  width: 7px;
+  height: 10px;
+  background: currentColor;
+  clip-path: polygon(100% 0, 0 50%, 100% 100%);
+}
+.btn.next::before { clip-path: polygon(0 0, 100% 50%, 0 100%); }
+
+/* the rhythm panel: a column per genre, opened under the picker */
+.rhythm-panel {
+  position: absolute;
+  inset: auto;
+  max-width: calc(100vw - 32px);
+  margin: 0;
+  padding: 16px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--panel);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.04), transparent);
+  box-shadow: var(--raised), 0 20px 60px rgba(0, 0, 0, 0.7);
+  color: var(--text);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.rhythm-panel:popover-open { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px 12px; }
+.rhythm-panel.placing { visibility: hidden; }
+.rhythm-group { display: flex; flex: 1 1 auto; flex-direction: column; gap: 2px; max-width: 280px; }
+.rhythm-group h2 { margin: 0 0 6px; padding: 0 10px; font-weight: normal; }
+.rhythm-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  text-shadow: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.rhythm-item:hover { background: rgba(255, 255, 255, 0.06); }
+.rhythm-item:focus-visible { outline: 1px solid var(--led); outline-offset: -1px; }
+.rhythm-item[aria-current] { background: var(--screen); box-shadow: var(--sunken); color: var(--led); text-shadow: 0 0 5px var(--led); }
+.rhythm-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.rhythm-tempo { color: var(--faint); font-size: 10px; font-variant-numeric: tabular-nums; }
+.rhythm-item[aria-current] .rhythm-tempo { color: inherit; opacity: 0.6; }
 
 .stepper { gap: 6px; }
 .count-lcd {
@@ -527,7 +586,14 @@ dialog input[hidden] { display: none; }
   input[type="range"] { width: 110px; }
   select { max-width: 200px; }
   .rhythm { flex: 1 1 100%; min-width: 0; }
-  .rhythm select { flex: 1 1 auto; width: 100px; max-width: none; } /* a set width, so the longest option can't widen the row */
-  .rhythm .btn { padding: 0 12px; }
+  .rhythm > .module-row { flex-wrap: wrap; } /* Save and Delete go under the picker */
+  .rhythm-pick { flex: 1 1 100%; min-width: 0; }
+  .rhythm .picker { flex: 1 1 auto; width: 100px; max-width: none; } /* a set width, so a long name can't widen the row */
+  .rhythm .btn:not(.icon) { padding: 0 12px; }
+  .rhythm-panel { padding: 12px 8px; }
+  .rhythm-panel:popover-open { gap: 12px 4px; }
+  .rhythm-group { flex-basis: 140px; }
+  .rhythm-item { gap: 8px; padding: 0 8px; font-size: 10px; }
+  .rhythm-tempo { display: none; }
   .grid { --ch: 30px; }
 }

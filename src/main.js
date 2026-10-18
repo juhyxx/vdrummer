@@ -23,6 +23,10 @@ const els = {
   tap: $('tap'),
   kits: $('kits'),
   rhythm: $('rhythm'),
+  rhythmName: $('rhythmName'),
+  rhythmPanel: $('rhythmPanel'),
+  prevRhythm: $('prevRhythm'),
+  nextRhythm: $('nextRhythm'),
   save: $('save'),
   remove: $('remove'),
   volume: $('volume'),
@@ -288,34 +292,74 @@ function setFill(input) {
 
 // ---------------------------------------------------------------- rhythms
 
-function fillRhythms() {
-  const sel = els.rhythm;
-  sel.replaceChildren();
-  // Shown while the pattern doesn't match a stored one; picking a rhythm then always loads it.
-  const custom = new Option('', '');
-  custom.disabled = true;
-  custom.hidden = true;
-  sel.add(custom);
+/** Every rhythm to pick, in the order the panel shows them: the presets by genre, then the saved ones by name. */
+function rhythmList() {
+  const list = [];
   for (const genre of GENRES) {
-    const group = document.createElement('optgroup');
-    group.label = genre.name;
-    for (const p of PRESETS.filter((x) => x.genre === genre.id)) group.append(new Option(p.name, `p:${p.id}`));
-    sel.append(group);
+    for (const p of PRESETS.filter((x) => x.genre === genre.id)) list.push({ value: `p:${p.id}`, name: p.name, tempo: p.tempo, group: genre.name });
   }
-  if (library.length) {
-    const group = document.createElement('optgroup');
-    group.label = 'Saved';
-    for (const item of [...library].sort((a, b) => a.name.localeCompare(b.name))) group.append(new Option(item.name, `u:${item.id}`));
-    sel.append(group);
+  for (const item of [...library].sort((a, b) => a.name.localeCompare(b.name))) {
+    list.push({ value: `u:${item.id}`, name: item.name, tempo: item.tempo, group: 'Saved' });
+  }
+  return list;
+}
+
+/** Fills the rhythm panel: a column per group, the current rhythm lit. */
+function fillRhythms() {
+  const panel = els.rhythmPanel;
+  panel.replaceChildren();
+  let column = null;
+  for (const r of rhythmList()) {
+    if (column?.dataset.group !== r.group) {
+      column = panel.appendChild(document.createElement('section'));
+      column.className = 'rhythm-group';
+      column.dataset.group = r.group;
+      const heading = column.appendChild(document.createElement('h2'));
+      heading.className = 'module-label';
+      heading.textContent = r.group;
+    }
+    const item = column.appendChild(document.createElement('button'));
+    item.type = 'button';
+    item.className = 'rhythm-item';
+    item.value = r.value;
+    item.title = `${r.name}, ${r.tempo} BPM`;
+    if (r.value === state.source) item.setAttribute('aria-current', 'true');
+    const name = document.createElement('span');
+    name.className = 'rhythm-name';
+    name.textContent = r.name;
+    const tempo = document.createElement('span');
+    tempo.className = 'rhythm-tempo';
+    tempo.textContent = r.tempo;
+    item.append(name, tempo);
   }
 }
 
+/** Puts the open rhythm panel under the picker, inside the window. */
+function placeRhythmPanel() {
+  const panel = els.rhythmPanel;
+  const anchor = els.rhythmModule.getBoundingClientRect();
+  const margin = 16;
+  // Its width depends on the room to its right, so measure it at the window's left edge first.
+  panel.style.left = `${scrollX + margin}px`;
+  const left = Math.min(anchor.left, document.documentElement.clientWidth - panel.offsetWidth - margin);
+  panel.style.left = `${scrollX + Math.max(margin, left)}px`;
+  panel.style.top = `${scrollY + anchor.bottom + 8}px`;
+  panel.style.maxHeight = `${Math.max(200, innerHeight - anchor.bottom - 8 - margin)}px`;
+}
+
+/** Loads the rhythm `by` places on in the panel's order, wrapping around. */
+function stepRhythm(by) {
+  const list = rhythmList();
+  const i = list.findIndex((r) => r.value === state.source);
+  const next = i < 0 ? (by > 0 ? 0 : list.length - 1) : (i + by + list.length) % list.length;
+  loadRhythm(list[next].value);
+}
+
 function showSource() {
-  const sel = els.rhythm;
-  sel.options[0].textContent = `${pattern.name} *`;
-  const match = !state.dirty && [...sel.options].some((o) => o.value === state.source && o.value);
-  sel.value = match ? state.source : '';
-  sel.title = state.dirty ? 'Changed since it was loaded' : '';
+  // Marked while the pattern doesn't match a stored one; picking a rhythm then always loads it.
+  const match = !state.dirty && rhythmList().some((r) => r.value === state.source);
+  els.rhythmName.textContent = match ? pattern.name : `${pattern.name} *`;
+  els.rhythm.title = state.dirty ? 'Changed since it was loaded' : 'Pick a rhythm';
   els.save.classList.toggle('pending', state.dirty);
   els.remove.disabled = !state.source.startsWith('u:');
 }
@@ -354,7 +398,6 @@ async function saveRhythm() {
   store(KEYS.library, library);
   state.source = `u:${item.id}`;
   state.dirty = false;
-  fillRhythms();
   showSource();
   persist();
   toast(`Saved ${name}`);
@@ -367,7 +410,6 @@ async function removeRhythm() {
   store(KEYS.library, library);
   state.source = '';
   state.dirty = true;
-  fillRhythms();
   showSource();
   persist();
   toast(`Deleted ${item.name}`);
@@ -550,7 +592,36 @@ els.kits.addEventListener('change', (e) => {
   persist();
 });
 
-els.rhythm.addEventListener('change', () => loadRhythm(els.rhythm.value));
+els.prevRhythm.addEventListener('click', () => stepRhythm(-1));
+els.nextRhythm.addEventListener('click', () => stepRhythm(1));
+
+// The panel can only be measured once it's open, so it stays invisible until it's placed.
+els.rhythmPanel.addEventListener('beforetoggle', (e) => {
+  if (e.newState !== 'open') return;
+  fillRhythms();
+  els.rhythmPanel.classList.add('placing');
+});
+els.rhythmPanel.addEventListener('toggle', (e) => {
+  if (e.newState !== 'open') return;
+  placeRhythmPanel();
+  els.rhythmPanel.classList.remove('placing');
+  (els.rhythmPanel.querySelector('[aria-current]') ?? els.rhythmPanel.querySelector('button'))?.focus();
+});
+els.rhythmPanel.addEventListener('click', (e) => {
+  const item = e.target.closest('.rhythm-item');
+  if (!item) return;
+  els.rhythmPanel.hidePopover();
+  loadRhythm(item.value);
+});
+els.rhythmPanel.addEventListener('keydown', (e) => {
+  if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+  e.preventDefault();
+  const items = [...els.rhythmPanel.querySelectorAll('.rhythm-item')];
+  const at = items.indexOf(document.activeElement);
+  const i = at < 0 ? 0 : (at + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length;
+  items[i].focus();
+});
+window.addEventListener('resize', () => els.rhythmPanel.matches(':popover-open') && placeRhythmPanel());
 els.save.addEventListener('click', saveRhythm);
 els.remove.addEventListener('click', removeRhythm);
 
@@ -637,7 +708,6 @@ showKitView();
 els.reverb.value = settings.reverb;
 els.reverbValue.textContent = `${settings.reverb}%`;
 setFill(els.reverb);
-fillRhythms();
 render();
 useKit();
 // Load the other kits in the background, so switching is instant (and they work offline).

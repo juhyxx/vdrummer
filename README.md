@@ -91,7 +91,9 @@ Details and the full license notes are in [`samples/CREDITS.md`](samples/CREDITS
 - **Rhythms**: 32 prepared grooves in four groups, each loading with its genre's kit and
   tempo: rock & pop, metal (double bass split between the feet, crashes left and right), jazz & latin (swing,
   waltz, bossa nova, samba, baião, salsa, cha-cha-chá, songo, Afro-Cuban 6/8) and
-  electronic. Save your own under a name; they're kept in `localStorage`, as are the
+  electronic. The Rhythm picker opens a panel with all of them at once, a column per group
+  (with each one's tempo), and the arrows either side of it step to the previous or next
+  rhythm. Save your own under a name; they're kept in `localStorage`, as are the
   pattern being edited and the settings.
 - **MIDI export**: *MIDI* downloads the rhythm as a Standard MIDI File, one loop with its
   tempo, meter and swing, on General MIDI drum notes (channel 10), so it plays in any DAW
