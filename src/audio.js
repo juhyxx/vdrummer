@@ -33,8 +33,9 @@ const wet = (v) => 1.6 * v ** 1.6;
 const dry = (v) => 1 - 0.25 * v ** 2;
 
 /**
- * Plays the drum samples. Each instrument has its own bus, panned to its place in the kit;
- * the whole kit then goes through one room reverb, whose amount the player sets.
+ * Plays the drum samples. Each instrument has its own bus, panned to its place in the kit
+ * and widened (see addBus); the whole kit then goes through one room reverb. The player
+ * sets the reverb's amount and the stereo width.
  */
 export class DrumEngine {
   constructor() {
@@ -44,6 +45,7 @@ export class DrumEngine {
     this.kit = null;
     this.volume = 0.8;
     this.reverbAmount = 0.3;
+    this.width = 1;
     this.openHat = null;
   }
 
@@ -88,12 +90,49 @@ export class DrumEngine {
     this.lowCut = new BiquadFilterNode(ctx, { type: 'highpass', frequency: 200 });
     kit.connect(this.send).connect(this.lowCut);
     this.buses = {};
-    for (const inst of INSTRUMENTS) {
-      const pan = new StereoPannerNode(ctx, { pan: inst.pan });
-      pan.connect(kit);
-      this.buses[inst.id] = pan;
-    }
+    this.stereo = [];
+    INSTRUMENTS.forEach((inst, i) => this.addBus(inst, i, kit));
     this.setRoom();
+  }
+
+  /**
+   * An instrument's bus: the sound panned to its place, plus, for a wider image (as the pair
+   * of overhead mics hears a kit), a copy 9–17 ms later and a little darker on the other side
+   * of the middle. The copies' delays differ between instruments so they don't colour alike.
+   */
+  addBus(inst, i, out) {
+    const ctx = this.ctx;
+    const input = new GainNode(ctx);
+    const pan = new StereoPannerNode(ctx);
+    input.connect(pan).connect(out);
+    const side = { inst, pan };
+    if (inst.spread) {
+      side.copy = new StereoPannerNode(ctx);
+      side.level = new GainNode(ctx);
+      const delay = new DelayNode(ctx, { delayTime: (9 + ((i * 5) % 9)) / 1000 });
+      const dark = new BiquadFilterNode(ctx, { type: 'lowpass', frequency: 6000 });
+      input.connect(delay).connect(dark).connect(side.level).connect(side.copy).connect(out);
+    }
+    this.stereo.push(side);
+    this.buses[inst.id] = input;
+    this.applyWidth();
+  }
+
+  /** Stereo width, 0 (mono) – 1 (the full spread). */
+  setWidth(w) {
+    this.width = w;
+    if (this.ctx) this.applyWidth();
+  }
+
+  applyWidth() {
+    const w = this.width;
+    const t = this.ctx.currentTime;
+    for (const { inst, pan, copy, level } of this.stereo) {
+      pan.pan.setTargetAtTime(inst.pan * w, t, 0.03);
+      if (!copy) continue;
+      copy.pan.setTargetAtTime((inst.pan < 0 ? 0.6 : -0.6) * w, t, 0.03);
+      level.gain.setTargetAtTime(inst.spread * w, t, 0.03);
+    }
   }
 
   /**

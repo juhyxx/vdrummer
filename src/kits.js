@@ -1,18 +1,20 @@
-// The grid rows, top to bottom. `pan` places each piece where the drummer hears it
-// (−1 left, +1 right), for a right-handed kit: hi-hat on the left, floor tom on the right.
+// The grid rows, top to bottom. `pan` places each piece where the drummer hears it at full
+// width (−1 left, +1 right), for a right-handed kit: hi-hat on the left, floor tom on the
+// right. `spread` widens the piece itself (see DrumEngine): a delayed, softened copy of it
+// on the other side, at this level. The kicks stay in the middle, and narrow, for punch.
 export const INSTRUMENTS = [
-  { id: 'crash', name: 'Crash', pan: -0.5 },
-  { id: 'ride', name: 'Ride', pan: 0.5 },
-  { id: 'hho', name: 'Open hat', pan: -0.4 },
-  { id: 'hhc', name: 'Closed hat', pan: -0.4 },
-  { id: 'tom1', name: 'High tom', pan: -0.15 },
-  { id: 'tom2', name: 'Mid tom', pan: 0.15 },
-  { id: 'tom3', name: 'Floor tom', pan: 0.45 },
-  { id: 'snare', name: 'Snare', pan: -0.12 },
-  { id: 'rim', name: 'Side stick', pan: -0.12 },
-  { id: 'kick', name: 'Kick', pan: 0.05 },
-  { id: 'kick2', name: 'Kick 2', pan: -0.05 }, // left foot: a second bass drum, or a double pedal
-  { id: 'hhp', name: 'Hat pedal', pan: -0.4 },
+  { id: 'crash', name: 'Crash', pan: -0.85, spread: 0.45 },
+  { id: 'ride', name: 'Ride', pan: 0.8, spread: 0.45 },
+  { id: 'hho', name: 'Open hat', pan: -0.65, spread: 0.3 },
+  { id: 'hhc', name: 'Closed hat', pan: -0.65, spread: 0.2 },
+  { id: 'tom1', name: 'High tom', pan: -0.35, spread: 0.2 },
+  { id: 'tom2', name: 'Mid tom', pan: 0.25, spread: 0.2 },
+  { id: 'tom3', name: 'Floor tom', pan: 0.7, spread: 0.2 },
+  { id: 'snare', name: 'Snare', pan: -0.1, spread: 0.25 },
+  { id: 'rim', name: 'Side stick', pan: -0.1, spread: 0.15 },
+  { id: 'kick', name: 'Kick', pan: 0.04, spread: 0 },
+  { id: 'kick2', name: 'Kick 2', pan: -0.04, spread: 0 }, // left foot: a second bass drum, or a double pedal
+  { id: 'hhp', name: 'Hat pedal', pan: -0.65, spread: 0.15 },
 ];
 
 /**

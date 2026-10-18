@@ -78,8 +78,7 @@ Details and the full license notes are in [`samples/CREDITS.md`](samples/CREDITS
   Aasimonster), Rock a Ludwig kit (AVL Red Zeppelin), Jazz a small TAMA bop kit (AVL Blonde
   Bop) with the snare played with brushes, and Electro a Roland TR-808. The other kits have
   one bass drum, so *Kick 2* is a double pedal on it. Ghost notes on the acoustic kits use
-  softly played hits, not just quieter ones. Each piece is panned as the drummer hears it,
-  and a closed hi-hat chokes an open one. The side stick row is a
+  softly played hits, not just quieter ones. A closed hi-hat chokes an open one. The side stick row is a
   rimshot in the Metal kit and a clap in Electro. See [Samples](#samples).
 - **Kit view**: the drums from above, each outlined in its colour and lighting up in it as
   it plays (brightest for accents); press a piece to play it (shift-press the hi-hat for an
@@ -93,6 +92,10 @@ Details and the full license notes are in [`samples/CREDITS.md`](samples/CREDITS
 - **MIDI export**: *MIDI* downloads the rhythm as a Standard MIDI File, one loop with its
   tempo, meter and swing, on General MIDI drum notes (channel 10), so it plays in any DAW
   or drum plugin. Ghost, normal and accented hits are velocities 40, 90 and 120.
+- **Wide stereo**: each piece sits where the drummer hears it, crash far left, ride far
+  right, toms sweeping across, and cymbals, toms and snare are widened with a short, darker
+  echo on the other side (as overhead mics hear a kit); the kicks stay in the middle. *Width*
+  narrows it, down to mono.
 - **Reverb** on the whole kit, from dry to a wash (default 30 %). Each kit sits in its own
   room, from a tight one for metal to a longer one for jazz and electro; the tail darkens as
   it decays, and the low end stays dry so the kick keeps its punch.
