@@ -26,9 +26,11 @@ async function loadKit(id) {
   return kit;
 }
 
-// Send level to the reverb at 100 %. The convolver normalises its impulse response, so the
-// wet signal comes out about as loud as the dry one.
-const MAX_WET = 0.6;
+// Reverb amount (0–1) → levels. The convolver normalises its impulse response, so a send of
+// 1 comes back about as loud as the dry kit. The curve keeps the low half of the slider
+// subtle and saves the wash for the top; there the dry kit dips a little to make room.
+const wet = (v) => 1.6 * v ** 1.6;
+const dry = (v) => 1 - 0.25 * v ** 2;
 
 /**
  * Plays the drum samples. Each instrument has its own bus, panned to its place in the kit;
@@ -78,10 +80,11 @@ export class DrumEngine {
     this.master = new GainNode(ctx, { gain: this.volume ** 2 });
     const limiter = new DynamicsCompressorNode(ctx, { threshold: -10, knee: 10, ratio: 4, attack: 0.003, release: 0.2 });
     this.master.connect(limiter).connect(ctx.destination);
-    // kit → master, and kit → send → low cut (keeps the kick's boom dry) → reverb → master
+    // kit → dry → master, and kit → send → low cut (keeps the kick's boom dry) → reverb → master
     const kit = new GainNode(ctx);
-    kit.connect(this.master);
-    this.send = new GainNode(ctx, { gain: this.reverbAmount * MAX_WET });
+    this.dry = new GainNode(ctx, { gain: dry(this.reverbAmount) });
+    kit.connect(this.dry).connect(this.master);
+    this.send = new GainNode(ctx, { gain: wet(this.reverbAmount) });
     this.lowCut = new BiquadFilterNode(ctx, { type: 'highpass', frequency: 200 });
     kit.connect(this.send).connect(this.lowCut);
     this.buses = {};
@@ -127,7 +130,9 @@ export class DrumEngine {
   /** Reverb amount, 0–1, for the whole kit. */
   setReverb(v) {
     this.reverbAmount = v;
-    if (this.ctx) this.send.gain.setTargetAtTime(v * MAX_WET, this.ctx.currentTime, 0.03);
+    if (!this.ctx) return;
+    this.send.gain.setTargetAtTime(wet(v), this.ctx.currentTime, 0.03);
+    this.dry.gain.setTargetAtTime(dry(v), this.ctx.currentTime, 0.03);
   }
 
   setVolume(v) {
