@@ -1,7 +1,8 @@
 const NS = 'http://www.w3.org/2000/svg';
 
 // The kit seen from above, the drummer sitting at the bottom. viewBox 0 0 400 320.
-const KICK = { x: 148, y: 120, w: 110, h: 84 };
+const KICK = { y: 120, h: 84 }; // bass drum shells; their x and width depend on how many there are
+const PEDAL = { y: 208, w: 22, h: 44 };
 const PIECES = {
   snare: { cx: 136, cy: 232, r: 36, lugs: 10 },
   tom1: { cx: 172, cy: 128, r: 27, lugs: 6 },
@@ -12,7 +13,7 @@ const PIECES = {
   ride: { cx: 318, cy: 110, r: 58 },
 };
 // How long each piece glows after a hit, ms.
-const GLOW_MS = { crash: 900, ride: 450, hho: 500, hhc: 160, hhp: 180, tom1: 300, tom2: 320, tom3: 360, snare: 220, rim: 150, kick: 260 };
+const GLOW_MS = { crash: 900, ride: 450, hho: 500, hhc: 160, hhp: 180, tom1: 300, tom2: 320, tom3: 360, snare: 220, rim: 150, kick: 260, kick2: 260 };
 
 function el(tag, attrs, parent) {
   const e = document.createElementNS(NS, tag);
@@ -53,8 +54,8 @@ export class KitView {
     const base = el('g', { class: 'kit-base' }, svg);
     // Each glow is drawn right after its piece, so pieces in front (toms over the kick,
     // cymbals over drums) also cover its light.
-    const glow = (ids, shape, attrs, brightness = 1) => {
-      const node = el(shape, { ...attrs, opacity: 0, filter: 'url(#kit-glow)' }, base);
+    const glow = (ids, shape, attrs, brightness = 1, parent = base) => {
+      const node = el(shape, { ...attrs, opacity: 0, filter: 'url(#kit-glow)' }, parent);
       for (const id of [].concat(ids)) (this.glows[id] ??= []).push([node, brightness]);
       return node;
     };
@@ -62,15 +63,17 @@ export class KitView {
     // throne
     el('circle', { cx: 203, cy: 306, r: 24, class: 'throne' }, base);
 
-    // kick: from above, its shell is a rectangle with the heads at front and back
-    const kick = el('g', { 'data-inst': 'kick', class: 'piece' }, base);
-    el('title', {}, kick).textContent = 'Kick';
-    el('rect', { x: KICK.x, y: KICK.y, width: KICK.w, height: KICK.h, rx: 8, class: 'shell' }, kick);
-    for (const y of [KICK.y + 3, KICK.y + KICK.h - 3]) el('line', { x1: KICK.x + 4, x2: KICK.x + KICK.w - 4, y1: y, y2: y, class: 'hoop' }, kick);
-    el('rect', { x: 191, y: KICK.y + KICK.h + 4, width: 24, height: 44, rx: 5, class: 'pedal' }, kick);
-    el('circle', { cx: 203, cy: KICK.y + KICK.h + 2, r: 5, class: 'beater' }, kick);
-    glow('kick', 'rect', { x: KICK.x, y: KICK.y, width: KICK.w, height: KICK.h, rx: 8, class: 'glow-fill' });
-    glow('kick', 'rect', { x: 191, y: KICK.y + KICK.h + 4, width: 24, height: 44, rx: 5, class: 'glow-fill' });
+    // Bass drums: one with a double pedal (Kick 2 is the left pedal), or two side by side.
+    // setKicks() shows the one that fits the kit.
+    const single = el('g', { class: 'kicks-1' }, base);
+    this.kickDrum(single, ['kick', 'kick2'], 148, 110, 'Kick', glow);
+    this.pedal(single, 'kick2', 178, 'Kick 2 (left pedal)', glow);
+    this.pedal(single, 'kick', 206, 'Kick', glow);
+    const double = el('g', { class: 'kicks-2' }, base);
+    this.kickDrum(double, ['kick2'], 140, 60, 'Kick 2', glow);
+    this.kickDrum(double, ['kick'], 206, 60, 'Kick', glow);
+    this.pedal(double, 'kick2', 159, 'Kick 2', glow);
+    this.pedal(double, 'kick', 225, 'Kick', glow);
 
     // hi-hat pedal
     const pedal = el('g', { 'data-inst': 'hhp', class: 'piece' }, base);
@@ -100,6 +103,23 @@ export class KitView {
     this.kitName = el('text', { x: 392, y: 312, 'text-anchor': 'end', class: 'kit-name' }, svg);
   }
 
+  /** A bass drum from above: its shell is a rectangle, with a head at the front and the back. */
+  kickDrum(parent, ids, x, w, title, glow) {
+    const g = el('g', { 'data-inst': ids[0], class: 'piece' }, parent);
+    el('title', {}, g).textContent = title;
+    el('rect', { x, y: KICK.y, width: w, height: KICK.h, rx: 8, class: 'shell' }, g);
+    for (const y of [KICK.y + 3, KICK.y + KICK.h - 3]) el('line', { x1: x + 4, x2: x + w - 4, y1: y, y2: y, class: 'hoop' }, g);
+    glow(ids, 'rect', { x, y: KICK.y, width: w, height: KICK.h, rx: 8, class: 'glow-fill' }, 1, parent);
+  }
+
+  pedal(parent, id, x, title, glow) {
+    const g = el('g', { 'data-inst': id, class: 'piece' }, parent);
+    el('title', {}, g).textContent = title;
+    el('rect', { x, y: PEDAL.y, width: PEDAL.w, height: PEDAL.h, rx: 5, class: 'pedal' }, g);
+    el('circle', { cx: x + PEDAL.w / 2, cy: PEDAL.y - 2, r: 5, class: 'beater' }, g);
+    glow(id, 'rect', { x, y: PEDAL.y, width: PEDAL.w, height: PEDAL.h, rx: 5, class: 'glow-fill' }, 1, parent);
+  }
+
   drum(parent, id, { cx, cy, r, lugs }, glow) {
     const g = el('g', { 'data-inst': id, class: 'piece' }, parent);
     el('title', {}, g).textContent = { snare: 'Snare', tom1: 'High tom', tom2: 'Mid tom', tom3: 'Floor tom' }[id];
@@ -122,8 +142,13 @@ export class KitView {
     el('circle', { cx, cy, r: 2.5, class: 'nut' }, g);
   }
 
-  setKitName(name) {
-    this.kitName.textContent = `${name} kit`;
+  setKicks(n) {
+    this.svg.dataset.kicks = n;
+  }
+
+  setKitName(text, title) {
+    this.kitName.textContent = text;
+    (this.kitName.firstElementChild ?? el('title', {}, this.kitName)).textContent = title;
   }
 
   flash(id, level) {

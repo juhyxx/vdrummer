@@ -1,27 +1,54 @@
 import { INSTRUMENTS, KITS } from './kits.js';
-import { renderKit } from './synth.js';
 
-// Gain of each hit level: 1 ghost, 2 normal, 3 accent.
+// Gain of each hit level: 1 ghost, 2 normal, 3 accent. Ghost notes also use the kit's
+// softly played sample where it has one, which sounds different, not just quieter.
 const VELOCITY = [0, 0.3, 0.7, 1];
 
+/** Fetches and decodes a kit's samples: { instrument id: { hit, soft } } of AudioBuffers. */
+async function loadKit(id) {
+  // An offline context decodes without a user gesture, so kits can load before the first click.
+  const decoder = new OfflineAudioContext(1, 1, 44100);
+  const load = async (name) => {
+    const res = await fetch(`samples/${id}/${name}.wav`);
+    if (!res.ok) throw new Error(`${name}: HTTP ${res.status}`);
+    return decoder.decodeAudioData(await res.arrayBuffer());
+  };
+  const { soft, alias = {} } = KITS[id];
+  const own = INSTRUMENTS.filter((inst) => !alias[inst.id]);
+  const voices = await Promise.all(
+    own.map(async (inst) => ({
+      hit: await load(inst.id),
+      soft: soft.includes(inst.id) ? await load(`${inst.id}-soft`) : null,
+    })),
+  );
+  const kit = Object.fromEntries(own.map((inst, i) => [inst.id, voices[i]]));
+  for (const [inst, other] of Object.entries(alias)) kit[inst] = kit[other];
+  return kit;
+}
+
 /**
- * Plays the drum sounds. Kits are rendered ahead of time (see synth.js); each instrument
- * has its own bus, panned to its place in the kit and sent to a small room reverb.
+ * Plays the drum samples. Each instrument has its own bus, panned to its place in the kit
+ * and sent to a small room reverb.
  */
 export class DrumEngine {
   constructor() {
     this.ctx = null;
-    this.rendered = new Map(); // kit id → Promise of { instrument id: AudioBuffer }
+    this.loaded = new Map(); // kit id → Promise of its buffers
     this.buffers = null;
     this.kit = null;
     this.volume = 0.8;
     this.openHat = null;
   }
 
-  /** Renders a kit's sounds (once) without switching to it, so switching later is instant. */
+  /** Loads a kit's samples (once) without switching to it, so switching later is instant. */
   prepare(id) {
-    if (!this.rendered.has(id)) this.rendered.set(id, renderKit(KITS[id]));
-    return this.rendered.get(id);
+    if (!this.loaded.has(id)) {
+      this.loaded.set(id, loadKit(id).catch((err) => {
+        this.loaded.delete(id); // let a later attempt try again
+        throw err;
+      }));
+    }
+    return this.loaded.get(id);
   }
 
   async setKit(id) {
@@ -82,8 +109,9 @@ export class DrumEngine {
 
   /** Plays instrument `id` at hit `level` (1–3), at context time `time` (now if omitted or past). */
   play(id, level, time = 0) {
-    const buffer = this.buffers?.[id];
-    if (!buffer || !this.ctx) return;
+    const voice = this.buffers?.[id];
+    if (!voice || !this.ctx) return;
+    const buffer = (level === 1 && voice.soft) || voice.hit;
     const ctx = this.ctx;
     const t = Math.max(time, ctx.currentTime);
     if (id === 'hhc' || id === 'hhp' || id === 'hho') this.choke(t);

@@ -1,5 +1,6 @@
 // Prepared rhythms, grouped by genre; each loads with its genre's kit.
 // Rows: '-' rest, 'g' ghost, 'x' hit, 'X' accent, one character per step, spaced by beat.
+// Double bass parts alternate feet: kick is the right foot, kick2 the left.
 // A row covering one bar repeats over all bars (see fromPreset in pattern.js).
 // `div` is the resolution in steps per beat: 2 = 1/8, 3 = 1/8 triplets, 4 = 1/16.
 
@@ -97,7 +98,8 @@ const metal = [
       crash: 'x--- ---- ---- ----',
       ride: '---- x--- x--- x---',
       snare: '---- X--- ---- X---',
-      kick: 'xxxx xxxx xxxx xxxx',
+      kick: 'x-x- x-x- x-x- x-x-',
+      kick2: '-x-x -x-x -x-x -x-x',
     },
   },
   {
@@ -123,7 +125,8 @@ const metal = [
     rows: {
       crash: 'x--- x--- x--- x---',
       snare: '---- X--- ---- X---',
-      kick: 'x-xx x-xx x-xx x-xx',
+      kick: 'x-x- x-x- x-x- x-x-',
+      kick2: '---x ---x ---x ---x',
     },
   },
   {
@@ -140,7 +143,8 @@ const metal = [
     rows: {
       crash: 'x--- x--- x--- x---',
       snare: '---- ---- X--- ----',
-      kick: 'xx-x --x- --x- -x-- xx-x --x- ---- xxxx',
+      kick: 'x--x --x- --x- -x-- x--x --x- ---- x-x-',
+      kick2: '-x-- ---- ---- ---- -x-- ---- ---- -x-x',
     },
   },
 ];
@@ -177,6 +181,63 @@ const jazz = [
       hhc: 'xx xx xx xx',
       rim: 'x- -x -- x- -- x- -x --',
       kick: 'x- -x x- -x',
+    },
+  },
+  {
+    // surdo-like kick on 1 and its pickup, hi-hat foot on every offbeat
+    id: 'samba', name: 'Samba', tempo: 100, div: 4,
+    rows: {
+      ride: 'xxxX xxxX xxxX xxxX',
+      rim: 'x--x --x- --x- x---',
+      kick: 'x--x x--x x--x x--x',
+      hhp: '--x- --x- --x- --x-',
+    },
+  },
+  {
+    // the zabumba's tresillo in the kick
+    id: 'baiao', name: 'Baião', tempo: 92, div: 4,
+    rows: {
+      hhc: 'xxXx xxXx xxXx xxXx',
+      rim: '---- x--- ---- x---',
+      kick: 'x--x --x- x--x --x-',
+    },
+  },
+  {
+    // bell over 3-2 son clave, kick on the bass tumbao (2+ and 4)
+    id: 'salsa', name: 'Salsa (3-2 clave)', tempo: 180, div: 2, bars: 2,
+    rows: {
+      ride: 'x- xx -x -x x- x- xx -x',
+      rim: 'x- -x -- x- -- x- x- --',
+      kick: '-- -x -- x-',
+      hhp: '-- x- -- x-',
+    },
+  },
+  {
+    id: 'chacha', name: 'Cha-cha-chá', tempo: 116, div: 2,
+    rows: {
+      ride: 'X- x- X- x-',
+      rim: '-- x- -- xx',
+      kick: 'x- -- x- --',
+      hhp: '-- x- -- x-',
+    },
+  },
+  {
+    id: 'songo', name: 'Songo', tempo: 104, div: 4,
+    rows: {
+      ride: 'x--- x--- x--- x---',
+      snare: 'g--X -gg- g-X- -g-g',
+      kick: '---- --x- ---- x---',
+      hhp: '---- x--- ---- x---',
+    },
+  },
+  {
+    // 12/8 bembé bell pattern
+    id: 'afro68', name: 'Afro-Cuban 6/8', tempo: 100, div: 3,
+    rows: {
+      ride: 'x-x -xx -x- x-x',
+      rim: '--- --x --- --x',
+      kick: 'x-- --- x-- ---',
+      hhp: '--- x-- --- x--',
     },
   },
 ];

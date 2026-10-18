@@ -12,7 +12,8 @@
 const VERSION = 'dev';
 const CACHE = 'vdrummer-' + VERSION;
 
-// Every file the site publishes. The deploy fails if one is missing here.
+// Every file the site publishes, except the drum samples: those are cached as they're
+// fetched (the app loads every kit soon after starting). The deploy fails if one is missing here.
 const FILES = [
   './',
   'manifest.webmanifest',
@@ -25,11 +26,11 @@ const FILES = [
   'fonts/Silkscreen-Regular.woff2',
   'src/version.js',
   'src/kits.js',
-  'src/synth.js',
   'src/audio.js',
   'src/pattern.js',
   'src/presets.js',
   'src/sequencer.js',
+  'src/midi.js',
   'src/grid.js',
   'src/kitview.js',
   'src/main.js',

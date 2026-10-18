@@ -302,6 +302,7 @@ input[type="range"]::-moz-range-thumb {
 #kit { position: absolute; inset: 12px; width: calc(100% - 24px); height: calc(100% - 24px); overflow: visible; }
 
 .kit-base .piece { cursor: pointer; }
+#kit[data-kicks="2"] .kicks-1, #kit:not([data-kicks="2"]) .kicks-2 { display: none; }
 .kit-base .throne { fill: rgba(255, 255, 255, 0.03); stroke: rgba(255, 255, 255, 0.08); stroke-width: 2; }
 .kit-base .shell { fill: #121311; stroke: rgba(255, 255, 255, 0.22); stroke-width: 2.5; }
 .kit-base .head { fill: rgba(255, 255, 255, 0.05); stroke: rgba(0, 0, 0, 0.6); stroke-width: 1; }

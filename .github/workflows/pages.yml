@@ -22,17 +22,18 @@ jobs:
       - name: Collect site files
         run: |
           mkdir -p _site/fonts
-          cp -r index.html styles.css sw.js manifest.webmanifest src icons _site/
+          cp -r index.html styles.css sw.js manifest.webmanifest src icons samples _site/
           cp fonts/*.woff2 _site/fonts/
           touch _site/.nojekyll
 
       # The service worker caches the files it lists, for offline use. A file it misses
       # won't work offline; a listed file that doesn't exist stops it from installing at all.
+      # The drum samples are the exception: they're cached as the app loads them.
       - name: Check the service worker's file list
         working-directory: _site
         run: |
           ok=1
-          for f in $(find . -type f ! -name index.html ! -name sw.js ! -name .nojekyll | sed 's#^\./##' | sort); do
+          for f in $(find . -type f ! -name index.html ! -name sw.js ! -name .nojekyll ! -path './samples/*' | sed 's#^\./##' | sort); do
             grep -q "'$f'" sw.js || { echo "::error::sw.js doesn't list $f"; ok=0; }
           done
           for f in $(grep -oE "^  '[^']+'" sw.js | tr -d " '"); do

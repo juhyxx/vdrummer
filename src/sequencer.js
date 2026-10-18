@@ -83,7 +83,7 @@ export class Sequencer {
 }
 
 /** Swing delays every second 8th (or 16th) note; at 100 % it lands on the last triplet. */
-function swingDelay(p, step, stepDur) {
+export function swingDelay(p, step, stepDur) {
   if (!p.swing || (p.div !== 2 && p.div !== 4) || step % 2 === 0) return 0;
   return ((p.swing / 100) * stepDur) / 3;
 }

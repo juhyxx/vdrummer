@@ -2,6 +2,7 @@ import { DrumEngine } from './audio.js';
 import { Grid } from './grid.js';
 import { KITS, KIT_IDS, instrumentLabel } from './kits.js';
 import { KitView } from './kitview.js';
+import { toMidi } from './midi.js';
 import {
   BEATS, DIVISIONS, MAX_BARS, TEMPO,
   clearBar, copyBarToAll, deserialize, fromPreset, serialize, setBars, setBeats, setDivision, stepsPerBar,
@@ -44,6 +45,7 @@ const els = {
   clearBar: $('clearBar'),
   undo: $('undo'),
   redo: $('redo'),
+  midi: $('midi'),
   readout: $('readout'),
   bpm: $('bpm'),
   pos: $('pos'),
@@ -121,6 +123,32 @@ const beatLeds = [];
 
 const label = (inst) => instrumentLabel(pattern.kit, inst);
 
+let kitLoading = null; // id of the kit whose samples are on their way
+
+/** Switches the sound to the pattern's kit; the promise settles once its samples are loaded. */
+function useKit() {
+  const id = pattern.kit;
+  const ready = engine.setKit(id);
+  kitLoading = id;
+  showKitName();
+  ready.then(
+    () => kitLoading === id && ((kitLoading = null), showKitName()),
+    () => {
+      if (kitLoading !== id) return;
+      kitLoading = null;
+      showKitName();
+      toast(`Couldn't load the ${KITS[id].name} kit`);
+    },
+  );
+  return ready;
+}
+
+function showKitName() {
+  const kit = KITS[pattern.kit];
+  kitView.setKicks(kit.kicks);
+  kitView.setKitName(kitLoading === pattern.kit ? `Loading ${kit.name} kit...` : `${kit.name} kit`, `Samples: ${kit.source}`);
+}
+
 function preview(id, level) {
   engine.start();
   engine.play(id, level);
@@ -166,7 +194,7 @@ function restore(snap) {
   pattern = deserialize(JSON.parse(snap.p));
   state.source = snap.source;
   state.dirty = snap.dirty;
-  engine.setKit(pattern.kit);
+  useKit();
   afterChange(spb);
 }
 
@@ -213,7 +241,7 @@ function strokeEnd() {
 function render() {
   showTempo();
   for (const input of els.kits.querySelectorAll('input')) input.checked = input.value === pattern.kit;
-  kitView.setKitName(KITS[pattern.kit].name);
+  showKitName();
   els.meter.value = pattern.beats;
   els.division.value = pattern.div;
   els.bars.textContent = pattern.bars;
@@ -306,7 +334,7 @@ function loadRhythm(value) {
   state.source = value;
   state.dirty = false;
   state.bar = 0;
-  engine.setKit(pattern.kit);
+  useKit();
   afterChange(spb);
 }
 
@@ -363,6 +391,14 @@ function ask({ text, value, ok = 'OK' }) {
   });
 }
 
+function exportMidi() {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([toMidi(pattern)], { type: 'audio/midi' }));
+  a.download = `${pattern.name.replace(/[\\/:*?"<>|]+/g, '').trim() || 'rhythm'}.mid`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+}
+
 let toastTimer = 0;
 function toast(message) {
   els.toast.textContent = message;
@@ -382,8 +418,10 @@ async function play() {
   starting = true;
   engine.start(); // inside the click, so the browser lets it make sound
   try {
-    await engine.setKit(pattern.kit);
+    await useKit();
     seq.start();
+  } catch {
+    return; // useKit() has said why
   } finally {
     starting = false;
   }
@@ -511,9 +549,8 @@ els.tempo.addEventListener('input', () => setTempo(Number(els.tempo.value)));
 els.kits.addEventListener('change', (e) => {
   pattern.kit = e.target.value;
   state.dirty = true;
-  engine.setKit(pattern.kit);
+  useKit();
   grid.setLabels(label);
-  kitView.setKitName(KITS[pattern.kit].name);
   showSource();
   persist();
 });
@@ -553,6 +590,7 @@ els.copyBar.addEventListener('click', () => {
 els.clearBar.addEventListener('click', () => edit((p) => clearBar(p, state.bar)));
 els.undo.addEventListener('click', undo);
 els.redo.addEventListener('click', redo);
+els.midi.addEventListener('click', exportMidi);
 
 document.addEventListener('keydown', (e) => {
   if (els.dialog.open || e.target.matches('input[type="text"], select, textarea')) return;
@@ -584,9 +622,9 @@ setFill(els.volume);
 setLevel(settings.level);
 fillRhythms();
 render();
-engine.setKit(pattern.kit);
-// Render the other kits in the background, so switching is instant.
-setTimeout(() => KIT_IDS.forEach((id) => engine.prepare(id)), 1500);
+useKit();
+// Load the other kits in the background, so switching is instant (and they work offline).
+setTimeout(() => KIT_IDS.forEach((id) => engine.prepare(id).catch(() => {})), 3000);
 // Cells are sized once the pixel font (and so the row labels) has loaded.
 document.fonts?.ready.then(() => grid.fit());
 
