@@ -11,7 +11,7 @@ const PIECES = {
   // the crashes hang high on both sides; the ride sits lower, out over the floor tom
   crash: { cx: 88, cy: 70, r: 50 },
   crash2: { cx: 300, cy: 66, r: 46 },
-  tamb: { cx: 368, cy: 236, r: 20 },
+  tamb: { cx: 22, cy: 158, r: 18 }, // mounted on the hi-hat stand
   ride: { cx: 334, cy: 160, r: 52 },
 };
 // How long each piece glows after a hit, ms.
@@ -75,8 +75,8 @@ export class KitView {
     const single = el('g', { class: 'kicks-1' }, base);
     this.kickDrum(single, ['kick', 'kick2'], 148, 110, 'Kick', glow);
     const double = el('g', { class: 'kicks-2' }, base);
-    this.kickDrum(double, ['kick2'], 138, 62, 'Kick 2', glow, -9);
-    this.kickDrum(double, ['kick'], 206, 62, 'Kick', glow, 9);
+    this.kickDrum(double, ['kick2'], 112, 88, 'Kick 2', glow, -9);
+    this.kickDrum(double, ['kick'], 206, 88, 'Kick', glow, 9);
 
     // The only pedal shown is the hi-hat's: it's an instrument of its own (the kick pedals
     // would only repeat their drums).

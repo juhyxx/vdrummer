@@ -3,7 +3,7 @@
 // kick and snare in the middle, hi-hat and crash to the left, toms sweeping from left to
 // the floor tom on the right, ride and Crash R on the right.
 export const INSTRUMENTS = [
-  { id: 'tamb', name: 'Tambourine', pan: 0.35 },
+  { id: 'tamb', name: 'Tambourine', pan: -0.55 }, // on the hi-hat stand
   { id: 'crash', name: 'Crash L', pan: -0.6 },
   { id: 'crash2', name: 'Crash R', pan: 0.45 },
   { id: 'ride', name: 'Ride', pan: 0.6 },
@@ -51,10 +51,10 @@ export const KITS = {
   },
   jazz: {
     name: 'Jazz',
-    source: 'AVL Blonde Bop, brushed snare from Kingsley\'s Drum Kit',
+    source: 'AVL Blonde Bop; brushed snare from Freesound (Heigh-hoo, skaiware)',
     kicks: 1,
     alias: DOUBLE_PEDAL,
-    labels: { snare: 'Snare brush' },
+    labels: { snare: 'Snare brush' }, // ghost notes sweep, hits tap
     soft: ACOUSTIC_SOFT,
     room: { seconds: 1.6 },
   },

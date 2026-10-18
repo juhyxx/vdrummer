@@ -1,5 +1,7 @@
 // Prepared rhythms, grouped by genre; each loads with its genre's kit.
 // Rows: '-' rest, 'g' ghost, 'x' hit, 'X' accent, one character per step, spaced by beat.
+// The jazz kit's snare is brushed: ghost notes are sweeps, hits taps. Its grooves sweep on
+// 1 and 3 and tap on 2 and 4, as brush players do.
 // Double bass parts alternate feet: kick is the right foot, kick2 the left. Crashes use
 // both sides: crash is Crash L, crash2 Crash R. '|' marks bars, and is ignored too.
 // A row covering one bar repeats over all bars (see fromPreset in pattern.js).
@@ -174,7 +176,7 @@ const jazz = [
       ride: 'x-- x-x x-- x-x',
       hhp: '--- x-- --- x--',
       kick: 'g-- g-- g-- g--',
-      snare: '--- --g --- --- --- --- --g --x',
+      snare: 'g-- x-- g-- x--',
     },
   },
   {
@@ -182,6 +184,7 @@ const jazz = [
     rows: {
       ride: 'x-- x-x x-- x-x',
       hhp: '--- x-- --- x--',
+      snare: 'g-- x-- g-- x--',
     },
   },
   {
@@ -190,7 +193,7 @@ const jazz = [
       ride: 'x-- x-x x--',
       hhp: '--- x-- x--',
       kick: 'g-- --- ---',
-      snare: '--- --- --g',
+      snare: 'g-- x-- x--',
     },
   },
   {
@@ -243,7 +246,7 @@ const jazz = [
     id: 'songo', name: 'Songo', tempo: 104, div: 4,
     rows: {
       ride: 'x--- x--- x--- x---',
-      snare: 'g--X -gg- g-X- -g-g',
+      snare: '---X ---- --X- ----', // a stick groove: no sweeps
       kick: '---- --x- ---- x---',
       hhp: '---- x--- ---- x---',
     },

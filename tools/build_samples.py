@@ -22,9 +22,9 @@ RATE = 44100
 AVL = "https://www.bandshed.net/sounds/AVLDrumkits_SFZ/{}.zip"
 AASIMONSTER = "https://drumgizmo.org/kits/Aasimonster/aasimonster2_1.zip"
 TR808 = "https://raw.githubusercontent.com/fluid-music/open-drums/475cc3314fe06f6d1af02e9790ad9707c1f2b26b/tr-808/TR808WAV/{}"
-# Kingsley's Drum Kit by captain k man on Freesound (CC0). Only the MP3 previews can be
-# fetched without an account; decoding them needs afconvert (macOS) or ffmpeg.
-FREESOUND = "https://cdn.freesound.org/previews/{}/{}_2272910-hq.mp3"
+# Freesound sounds (CC0). Only the MP3 previews can be fetched without an account; decoding
+# them needs afconvert (macOS) or ffmpeg. The preview's name has the uploader's user id.
+FREESOUND = "https://cdn.freesound.org/previews/{}/{}_{}-hq.mp3"
 
 # Peak level of each instrument's (hard) sample, and the longest it may ring, in seconds.
 LEVEL = {"tamb": 0.45, "crash2": 0.55, "kick": 0.95, "kick2": 0.95, "snare": 0.9, "rim": 0.6, "tom1": 0.8, "tom2": 0.8, "tom3": 0.85,
@@ -55,8 +55,10 @@ AVL_SOFT = {"kick", "snare", "tom1", "tom2", "tom3", "hhc", "tamb"}
 # The Aasimonster has no tambourine; the metal kit borrows AVL Black Pearl's.
 METAL_TAMBOURINE = ("BLACK_PEARL_2023_repack", "54-Tambourine")
 
-# Freesound sound ids of the brushed snare: a hard hit, and a normal one for ghost notes.
-BRUSH_SNARE = {"": 125021, "-soft": 125022}
+# The jazz snare is played with brushes: a tap for hits and accents, and for ghost notes a
+# sweep, the brush drawn across the head. (sound id, user id[, start s, length s])
+BRUSH_TAP = (20296, 21830)                 # "brush_hit_small" by Heigh-hoo
+BRUSH_SWEEP = (556129, 11237444, 0, 0.5)   # "MuseScore_Brush_kit" by skaiware: its first stroke
 
 # The Aasimonster (DrumGizmo): every hit is recorded on 16 mics. instrument → (kit instrument,
 # {mic: gain}). Overhead and room mics are high-passed so they add air, not boom. "soft" picks
@@ -232,17 +234,17 @@ def mix_hit(z, inst, file, channels, mics):
     return out
 
 
-def brush_snare():
-    """The brushed snare hits, decoded from Freesound's MP3 previews: (suffix, samples)."""
-    for suffix, sound in BRUSH_SNARE.items():
-        mp3 = fetch(FREESOUND.format(sound // 1000, sound), os.path.join(CACHE, "freesound", f"{sound}.mp3"))
-        wav = mp3[:-4] + ".wav"
-        if not os.path.exists(wav):
-            if shutil.which("afconvert"):
-                subprocess.run(["afconvert", "-f", "WAVE", "-d", "LEI16", mp3, wav], check=True)
-            else:
-                subprocess.run(["ffmpeg", "-loglevel", "error", "-i", mp3, "-ac", "1", "-ar", str(RATE), wav], check=True)
-        yield suffix, mono(load(wav))
+def freesound(sound, user, start=0, length=None):
+    """A Freesound sound (or a stretch of it), decoded from its MP3 preview to mono."""
+    mp3 = fetch(FREESOUND.format(sound // 1000, sound, user), os.path.join(CACHE, "freesound", f"{sound}.mp3"))
+    wav = mp3[:-4] + "-44k.wav"
+    if not os.path.exists(wav):
+        if shutil.which("afconvert"):
+            subprocess.run(["afconvert", "-f", "WAVE", "-d", f"LEI16@{RATE}", "-c", "1", mp3, wav], check=True)
+        else:
+            subprocess.run(["ffmpeg", "-loglevel", "error", "-i", mp3, "-ac", "1", "-ar", str(RATE), wav], check=True)
+    x = mono(load(wav))
+    return x[int(start * RATE): int((start + length) * RATE) if length else None]
 
 
 def build_808():
@@ -255,8 +257,7 @@ if __name__ == "__main__":
     for kit, (archive, pieces) in AVL_KITS.items():
         print(kit)
         build_avl(kit, archive, pieces)
-    brushes = dict(brush_snare())
-    save("jazz", "snare", brushes[""], brushes["-soft"])
+    save("jazz", "snare", freesound(*BRUSH_TAP), freesound(*BRUSH_SWEEP))
     print("metal")
     build_aasimonster()
     build_avl("metal", METAL_TAMBOURINE[0], {"tamb": METAL_TAMBOURINE[1]})

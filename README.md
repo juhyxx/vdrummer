@@ -43,7 +43,7 @@ The kits are made from freely licensed sample libraries:
 | Metal | [The Aasimonster](https://drumgizmo.org/wiki/doku.php?id=kits:the_aasimonster) (DrumGizmo) | CC BY 4.0 |
 | Rock | [AVL Drumkits](http://www.bandshed.net/avldrumkits/) Red Zeppelin, by Glen MacArthur | CC BY-SA 3.0 |
 | Jazz | [AVL Drumkits](http://www.bandshed.net/avldrumkits/) Blonde Bop, by Glen MacArthur | CC BY-SA 3.0 |
-| Jazz snare (brushes) | Kingsley's Drum Kit by captain k man, on [Freesound](https://freesound.org/people/captain%20k%20man/packs/7808/) | CC0 |
+| Jazz snare (brushes) | Brush tap by Heigh-hoo and sweep by skaiware, on [Freesound](https://freesound.org/s/20296/) | CC0 |
 | Electro | Roland TR-808 samples by Michael Fischer, via [open-drums](https://github.com/fluid-music/open-drums) | free, no restrictions |
 
 [`tools/build_samples.py`](tools/build_samples.py) (Python 3, standard library only)
@@ -76,7 +76,8 @@ Details and the full license notes are in [`samples/CREDITS.md`](samples/CREDITS
   every bar with it (build one bar, then copy), or *Clear*.
 - **Kits**: four sets of recorded drums. Metal is a death metal kit with two bass drums (the
   Aasimonster), Rock a Ludwig kit (AVL Red Zeppelin), Jazz a small TAMA bop kit (AVL Blonde
-  Bop) with the snare played with brushes, and Electro a Roland TR-808. The other kits have
+  Bop) with the snare played with brushes (hits tap, ghost notes sweep), and Electro a
+  Roland TR-808. The other kits have
   one bass drum, so *Kick 2* is a double pedal on it. Ghost notes on the acoustic kits use
   softly played hits, not just quieter ones. A closed hi-hat chokes an open one. The side stick row is a
   rimshot in the Metal kit and a clap in Electro, and the tambourine row is maracas in
@@ -97,8 +98,8 @@ Details and the full license notes are in [`samples/CREDITS.md`](samples/CREDITS
   or drum plugin. Ghost, normal and accented hits are velocities 40, 90 and 120.
 - **Stereo**: each piece is panned where a standard drum mix puts it, from the drummer's
   seat as in the kit view: kick and snare in the middle, hi-hats (50 %) and crash (60 %)
-  left, toms from left (high, 30 %) to right (floor, 55 %), ride (60 %), crash R (45 %)
-  and tambourine (35 %) right. The metal
+  left, toms from left (high, 30 %) to right (floor, 55 %), ride (60 %) and crash R (45 %)
+  right, tambourine with the hi-hat (55 % left). The metal
   kit's two bass drums sit slightly apart; elsewhere Kick 2 is the same drum.
 - **Reverb** on the whole kit, from dry to a wash (default 30 %). Each kit sits in its own
   room, from a tight one for metal to a longer one for jazz and electro; the tail darkens as

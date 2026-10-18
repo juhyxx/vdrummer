@@ -57,11 +57,14 @@ The AVL Drumkits readme, kept here as its license asks:
 >
 > http://creativecommons.org/licenses/by-sa/3.0/
 
-## `jazz/snare.wav`, `jazz/snare-soft.wav`: brushed snare from Kingsley's Drum Kit
+## `jazz/snare.wav`, `jazz/snare-soft.wav`: the brushed snare, from Freesound
 
-- *Snare Hard Hit Brushes* (Freesound sound [125021](https://freesound.org/s/125021/)) and
-  *Snare Normal Hit Brushes* ([125022](https://freesound.org/s/125022/)), from the pack
-  *Kingsley's Drum Kit* by **captain k man** on [Freesound](https://freesound.org/people/captain%20k%20man/packs/7808/)
+- `snare.wav`, the tap: *brush_hit_small* by **Heigh-hoo**
+  (Freesound sound [20296](https://freesound.org/s/20296/))
+- `snare-soft.wav`, the sweep played for ghost notes: the first stroke of
+  *MuseScore_Brush_kit* by **skaiware** (Freesound sound [556129](https://freesound.org/s/556129/)),
+  "brush drum stirring/swirling". By its name it was recorded from MuseScore's brush kit,
+  whose MuseScore_General SoundFont (by S. Christian Collins) is under the MIT License.
 - License: [Creative Commons 0](https://creativecommons.org/publicdomain/zero/1.0/) (public domain)
 - Made from Freesound's high-quality MP3 previews.
 
