@@ -12,7 +12,8 @@ import { Sequencer } from './sequencer.js';
 import { VERSION } from './version.js';
 
 const KEYS = { settings: 'vdrummer.settings', pattern: 'vdrummer.pattern', library: 'vdrummer.library' };
-const DEFAULTS = { volume: 80, reverb: 30, showKit: true };
+// kitWidth, kitHeight: the kit view's size in px, once the splitter is dragged (0: the default)
+const DEFAULTS = { volume: 80, reverb: 30, showKit: true, kitWidth: 0, kitHeight: 0 };
 const UNDO_LIMIT = 100;
 
 const $ = (id) => document.getElementById(id);
@@ -46,8 +47,8 @@ const els = {
   undo: $('undo'),
   redo: $('redo'),
   midi: $('midi'),
-  showKit: $('showKit'),
   stage: $('stage'),
+  splitter: $('splitter'),
   toolbar: $('toolbar'),
   rhythmModule: $('rhythmModule'),
   kitScreen: $('kitScreen'),
@@ -665,19 +666,112 @@ els.undo.addEventListener('click', undo);
 els.redo.addEventListener('click', redo);
 els.midi.addEventListener('click', exportMidi);
 
-function showKitView() {
-  els.showKit.checked = settings.showKit;
-  els.stage.classList.toggle('no-kit', !settings.showKit);
-  // The kit picker sits on the kit view; while the view is hidden it waits in the toolbar.
-  if (settings.showKit) els.kitScreen.prepend(els.kitPicker);
-  else els.toolbar.insertBefore(els.kitPicker, els.rhythmModule);
+// ---------------------------------------------------------------- kit view size
+
+// The splitter between the kit view and the grid sizes the kit view: its width side by side,
+// its height on narrow screens, where it sits above the grid. Dragged below half the smallest
+// size it closes to a bar, and pressing the bar opens it again.
+const KIT_MIN = { width: 310, height: 160 }; // 310: room for the kit picker
+const GRID_MIN = 340; // the width the grid keeps, splitter included (as in styles.css)
+const narrow = matchMedia('(max-width: 960px)');
+const kitDim = () => (narrow.matches ? 'height' : 'width');
+const sizeKey = { width: 'kitWidth', height: 'kitHeight' };
+
+function kitRange(dim) {
+  const max = dim === 'width' ? els.stage.clientWidth - GRID_MIN : innerHeight * 0.75;
+  return [KIT_MIN[dim], Math.max(KIT_MIN[dim], Math.round(max))];
 }
 
-els.showKit.addEventListener('change', () => {
-  settings.showKit = els.showKit.checked;
+const kitSize = (dim) => (settings.showKit ? Math.round(els.kitScreen.getBoundingClientRect()[dim]) : 0);
+
+function showKitView() {
+  const open = settings.showKit;
+  const dim = kitDim();
+  els.stage.classList.toggle('no-kit', !open);
+  for (const [name, px] of [['--kit-w', settings.kitWidth], ['--kit-h', settings.kitHeight]]) {
+    if (px) els.stage.style.setProperty(name, `${px}px`);
+    else els.stage.style.removeProperty(name);
+  }
+  // The kit picker sits on the kit view; while the view is closed it waits in the toolbar.
+  if (open && els.kitPicker.parentNode !== els.kitScreen) els.kitScreen.prepend(els.kitPicker);
+  else if (!open && els.kitPicker.parentNode !== els.toolbar) els.toolbar.insertBefore(els.kitPicker, els.rhythmModule);
+
+  const s = els.splitter;
+  s.setAttribute('aria-orientation', dim === 'width' ? 'vertical' : 'horizontal');
+  s.setAttribute('aria-valuenow', open ? Math.round((100 * kitSize(dim)) / kitRange(dim)[1]) : 0);
+  if (open) s.removeAttribute('aria-valuetext');
+  else s.setAttribute('aria-valuetext', 'Closed');
+  s.title = open ? 'Drag to size the kit view, double-click to close it' : 'Show the drum kit';
+}
+
+function openKit(open) {
+  settings.showKit = open;
   showKitView();
   persist();
+}
+
+/** Sizes the kit view along `dim`, within its range; too small closes it. */
+function sizeKit(dim, size) {
+  const [min, max] = kitRange(dim);
+  settings.showKit = size >= min / 2;
+  if (settings.showKit) settings[sizeKey[dim]] = Math.min(max, Math.max(min, Math.round(size)));
+  showKitView();
+  persist();
+}
+
+els.splitter.addEventListener('pointerdown', (e) => {
+  if (e.button !== 0) return;
+  e.preventDefault();
+  const dim = kitDim();
+  const at = (ev) => (dim === 'width' ? ev.clientX : ev.clientY);
+  const start = at(e);
+  const from = kitSize(dim);
+  const before = settings[sizeKey[dim]];
+  let moved = false;
+  const move = (ev) => {
+    if (!moved && Math.abs(at(ev) - start) < 4) return; // a press, not a drag yet
+    moved = true;
+    els.splitter.classList.add('dragging');
+    sizeKit(dim, from + at(ev) - start);
+  };
+  const end = (ev) => {
+    els.splitter.removeEventListener('pointermove', move);
+    els.splitter.removeEventListener('pointerup', end);
+    els.splitter.removeEventListener('pointercancel', end);
+    els.splitter.classList.remove('dragging');
+    if (!moved && ev.type === 'pointerup' && !settings.showKit) openKit(true);
+    // Dragged shut: it opens again at the size it had.
+    else if (moved && !settings.showKit) {
+      settings[sizeKey[dim]] = before;
+      showKitView();
+      persist();
+    }
+  };
+  els.splitter.setPointerCapture(e.pointerId);
+  els.splitter.addEventListener('pointermove', move);
+  els.splitter.addEventListener('pointerup', end);
+  els.splitter.addEventListener('pointercancel', end);
 });
+
+// Opening the bar moves the splitter away, so a double-click here always starts on it open.
+els.splitter.addEventListener('dblclick', () => settings.showKit && openKit(false));
+
+els.splitter.addEventListener('keydown', (e) => {
+  const dim = kitDim();
+  const dir = (dim === 'width' ? { ArrowLeft: -1, ArrowRight: 1 } : { ArrowUp: -1, ArrowDown: 1 })[e.key];
+  if (e.key === 'Enter') openKit(!settings.showKit);
+  else if (e.key === 'Home') openKit(false);
+  else if (e.key === 'End') sizeKit(dim, kitRange(dim)[1]);
+  else if (dir && !settings.showKit) dir > 0 && openKit(true);
+  else if (dir) {
+    const size = kitSize(dim) + dir * (e.shiftKey ? 80 : 20);
+    if (size < kitRange(dim)[0]) openKit(false);
+    else sizeKit(dim, size);
+  } else return;
+  e.preventDefault();
+});
+
+narrow.addEventListener('change', showKitView);
 
 document.addEventListener('keydown', (e) => {
   if (els.dialog.open || e.target.matches('input[type="text"], select, textarea')) return;

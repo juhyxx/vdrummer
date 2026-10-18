@@ -339,16 +339,59 @@ input[type="range"]::-moz-range-thumb {
 
 /* ------------------------------------------------------------- screens */
 
+/* The kit view, the splitter and the grid. --kit-w is the kit view's width, set by main.js
+   once the splitter is dragged; the grid always keeps some room. */
 .stage {
+  --kit-w: max(310px, 32%);
   flex: 1 0 auto;
   display: grid;
-  grid-template-columns: minmax(280px, 32%) minmax(0, 1fr);
-  gap: 16px;
+  grid-template-columns: min(var(--kit-w), 100% - 340px) 16px minmax(0, 1fr);
   min-height: 420px;
   margin: 0 20px 20px;
 }
-.stage.no-kit { grid-template-columns: minmax(0, 1fr); }
+/* closed: the splitter is a bar on its own */
+.stage.no-kit { grid-template-columns: 26px minmax(0, 1fr); column-gap: 14px; }
 .stage.no-kit .kit-screen { display: none; }
+
+.splitter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  border-radius: 12px;
+  cursor: col-resize;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.splitter::after { /* the grip */
+  content: "";
+  width: 4px;
+  height: 44px;
+  border-radius: 2px;
+  background: var(--led-off);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.6);
+}
+.splitter:hover::after, .splitter.dragging::after { background: var(--led-dim); }
+.splitter:focus-visible { outline: 1px solid var(--led); outline-offset: -1px; }
+.splitter-label { display: none; }
+.no-kit .splitter {
+  flex-direction: column;
+  background: var(--bg-button);
+  box-shadow: var(--raised);
+  cursor: pointer;
+}
+.no-kit .splitter:hover { background-color: rgba(0, 0, 0, 0.5); }
+.no-kit .splitter-label {
+  display: block;
+  writing-mode: vertical-rl;
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.no-kit .splitter:hover .splitter-label { color: var(--led); text-shadow: 0 0 5px var(--led); }
+.no-kit .splitter.dragging { cursor: col-resize; }
 
 .screen {
   position: relative;
@@ -375,7 +418,7 @@ input[type="range"]::-moz-range-thumb {
 
 /* ------------------------------------------------------------- kit view */
 
-.kit-screen { display: flex; flex-direction: column; min-height: 300px; }
+.kit-screen { display: flex; flex-direction: column; }
 .kit-screen .kit-picker { position: relative; z-index: 1; align-items: center; padding: 14px 14px 0; }
 .kit-screen .kit-picker .module-label { display: none; } /* the view itself says what it picks */
 #kit { flex: 1; min-height: 0; width: calc(100% - 24px); margin: 4px 12px 12px; overflow: visible; }
@@ -567,9 +610,14 @@ dialog input[hidden] { display: none; }
 
 /* ------------------------------------------------------------- small screens */
 
+/* the kit view above the grid; the splitter sets its height, --kit-h, and closes to a bar across */
 @media (max-width: 960px) {
-  .stage { grid-template-columns: minmax(0, 1fr); grid-template-rows: 300px auto; }
-  .stage.no-kit { grid-template-rows: auto; }
+  .stage { --kit-h: 300px; grid-template-columns: minmax(0, 1fr); grid-template-rows: var(--kit-h) 16px auto; }
+  .stage.no-kit { grid-template-columns: minmax(0, 1fr); grid-template-rows: 26px auto; gap: 14px 0; }
+  .splitter, .no-kit .splitter.dragging { cursor: row-resize; }
+  .splitter::after { width: 44px; height: 4px; }
+  .no-kit .splitter { flex-direction: row; }
+  .no-kit .splitter-label { writing-mode: horizontal-tb; }
   .scroller { position: relative; }
 }
 
@@ -579,8 +627,8 @@ dialog input[hidden] { display: none; }
   .toolbar { gap: 10px 16px; padding: 4px 16px 10px; }
   .toolbar.edit { gap: 10px 14px; }
   .module { gap: 4px; }
-  .stage { gap: 10px; margin: 0 8px 8px; grid-template-rows: 270px auto; }
-  .kit-screen { min-height: 270px; }
+  .stage { --kit-h: 270px; margin: 0 8px 8px; grid-template-rows: var(--kit-h) 12px auto; }
+  .stage.no-kit { row-gap: 10px; }
   .kit-screen .kit-picker { padding: 10px 10px 0; }
   .screen { border-radius: 10px; }
   input[type="range"] { width: 110px; }

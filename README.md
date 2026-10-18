@@ -43,15 +43,15 @@ The kits are made from freely licensed sample libraries:
 | Metal | [The Aasimonster](https://drumgizmo.org/wiki/doku.php?id=kits:the_aasimonster) (DrumGizmo) | CC BY 4.0 |
 | Rock | [AVL Drumkits](http://www.bandshed.net/avldrumkits/) Red Zeppelin, by Glen MacArthur | CC BY-SA 3.0 |
 | Jazz | [AVL Drumkits](http://www.bandshed.net/avldrumkits/) Blonde Bop, by Glen MacArthur | CC BY-SA 3.0 |
-| Jazz snare (brushes) | Brush tap by Heigh-hoo and sweep by skaiware, on [Freesound](https://freesound.org/s/20296/) | CC0 |
+| Jazz snare (brushes) | The Brush kit of [MuseScore_General](https://ftp.osuosl.org/pub/musescore/soundfont/MuseScore_General/) (from FluidR3) | MIT |
 | Electro | Roland TR-808 samples by Michael Fischer, via [open-drums](https://github.com/fluid-music/open-drums) | free, no restrictions |
 
 [`tools/build_samples.py`](tools/build_samples.py) (Python 3, standard library only)
 downloads them and writes `samples/`: for each instrument a hard hit and, for acoustic kits, a
 soft one, as 16-bit mono WAV trimmed to start on the hit, faded out once it has died away and
 scaled to a set peak, so the kits are balanced alike. For the Aasimonster it reads only the
-hits it needs out of the 2.3 GB archive, and lines up and mixes the kit's 16 microphones. The
-brushed snare comes as MP3 and is decoded with `afconvert` (macOS) or `ffmpeg`. To change a
+hits it needs out of the 2.3 GB archive, and lines up and mixes the kit's 16 microphones;
+likewise the two brush samples out of the 215 MB MuseScore_General SoundFont. To change a
 kit, edit the tables at the top of the script and run:
 
 ```sh
@@ -85,8 +85,11 @@ Details and the full license notes are in [`samples/CREDITS.md`](samples/CREDITS
 - **Kit view**: the drums from above (the metal kit's two bass drums splayed outwards), each
   outlined in its colour and lighting up in it as it plays (brightest for accents; the hat
   pedal lights its pedal and the hi-hat, dimly); press a piece to play it (shift-press the hi-hat for an
-  open hat). The kit picker sits on top of it. *View: Kit* hides the view (the picker
-  moves to the toolbar), and the grid takes the whole width.
+  open hat). The kit picker sits on top of it. Drag the bar between the view and the grid
+  to size it (its height on narrow screens, where the view sits above the grid); drag it
+  all the way, or double-click it, to close the view to a thin bar (the picker moves to the
+  toolbar and the grid takes the room), and press the bar to open it again. The splitter
+  takes the keyboard too: arrows size the view, Enter opens or closes it.
 - The grid's cells grow to fill its screen, in width and (on wide screens) height.
 - **Rhythms**: 32 prepared grooves in four groups, each loading with its genre's kit and
   tempo: rock & pop, metal (double bass split between the feet, crashes left and right), jazz & latin (swing,

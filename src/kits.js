@@ -51,7 +51,7 @@ export const KITS = {
   },
   jazz: {
     name: 'Jazz',
-    source: 'AVL Blonde Bop; brushed snare from Freesound (Heigh-hoo, skaiware)',
+    source: 'AVL Blonde Bop; brushed snare from MuseScore_General',
     kicks: 1,
     alias: DOUBLE_PEDAL,
     labels: { snare: 'Snare brush' }, // ghost notes sweep, hits tap

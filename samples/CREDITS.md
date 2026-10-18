@@ -57,16 +57,44 @@ The AVL Drumkits readme, kept here as its license asks:
 >
 > http://creativecommons.org/licenses/by-sa/3.0/
 
-## `jazz/snare.wav`, `jazz/snare-soft.wav`: the brushed snare, from Freesound
+## `jazz/snare.wav`, `jazz/snare-soft.wav`: the brushed snare, from MuseScore_General
 
-- `snare.wav`, the tap: *brush_hit_small* by **Heigh-hoo**
-  (Freesound sound [20296](https://freesound.org/s/20296/))
-- `snare-soft.wav`, the sweep played for ghost notes: the first stroke of
-  *MuseScore_Brush_kit* by **skaiware** (Freesound sound [556129](https://freesound.org/s/556129/)),
-  "brush drum stirring/swirling". By its name it was recorded from MuseScore's brush kit,
-  whose MuseScore_General SoundFont (by S. Christian Collins) is under the MIT License.
-- License: [Creative Commons 0](https://creativecommons.org/publicdomain/zero/1.0/) (public domain)
-- Made from Freesound's high-quality MP3 previews.
+- `snare.wav`, the tap: the sample *Brush Snr 1* (its attack eased, its top rolled off above
+  7 kHz); `snare-soft.wav`, the sweep played for
+  ghost notes: *Brush Swirl* (high-passed at 150 Hz). Both from the Brush kit of the
+  MuseScore_General SoundFont, version 0.2, whose samples come from FluidR3Mono.
+- Source: <https://ftp.osuosl.org/pub/musescore/soundfont/MuseScore_General/>
+- License: MIT. Its notices, kept here as the license asks:
+
+> FluidR3 (original version) by Frank Wen Copyright (c) 2000-02
+>
+> Mono conversion (FluidR3Mono) by Michael Cowgill Copyright (c) 2014-17
+>
+> Adaptation for MuseScore_General.sf2 by S. Christian Collins Copyright (c) 2018-19
+>
+> Mono version: Copyright (c) 2014-16 Michael Cowgill
+> Copyright (c) 2000-2002, 2008 Frank Wen <getfrank@gmail.com>
+>
+> Permission is hereby granted, free of charge, to any person
+> obtaining a copy of this software and associated documentation
+> files (the "Software"), to deal in the Software without
+> restriction, including without limitation the rights to use,
+> copy, modify, merge, publish, distribute, sublicense, and/or sell
+> copies of the Software, and to permit persons to whom the
+> Software is furnished to do so, subject to the following
+> conditions:
+>
+> The above copyright notice and this permission notice shall be
+> included in all copies or substantial portions of the Software.
+>
+> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+> EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+> OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+> NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+> HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+> WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+> FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+> OTHER DEALINGS IN THE SOFTWARE.
 
 ## `electronic/`: Roland TR-808 samples by Michael Fischer
 
