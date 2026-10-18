@@ -1,9 +1,11 @@
 // The grid rows, top to bottom. `pan` places each piece in the stereo mix (−1 left, +1
 // right) where it is in a standard drum mix, from the drummer's seat as in the kit view:
 // kick and snare in the middle, hi-hat and crash to the left, toms sweeping from left to
-// the floor tom on the right, ride on the right.
+// the floor tom on the right, ride and the second crash on the right.
 export const INSTRUMENTS = [
+  { id: 'tamb', name: 'Tambourine', pan: 0.35 },
   { id: 'crash', name: 'Crash', pan: -0.6 },
+  { id: 'crash2', name: 'Crash 2', pan: 0.45 },
   { id: 'ride', name: 'Ride', pan: 0.6 },
   { id: 'hho', name: 'Open hat', pan: -0.5 },
   { id: 'hhc', name: 'Closed hat', pan: -0.5 },
@@ -26,13 +28,13 @@ export const INSTRUMENTS = [
  * `labels` renames rows whose sound differs, and `room` is the size of the room the reverb
  * puts the kit in: how long its tail rings.
  */
-const ACOUSTIC_SOFT = ['kick', 'snare', 'tom1', 'tom2', 'tom3', 'hhc'];
+const ACOUSTIC_SOFT = ['kick', 'snare', 'tom1', 'tom2', 'tom3', 'hhc', 'tamb'];
 const DOUBLE_PEDAL = { kick2: 'kick' };
 
 export const KITS = {
   metal: {
     name: 'Metal',
-    source: 'The Aasimonster (DrumGizmo)',
+    source: 'The Aasimonster (DrumGizmo), tambourine from AVL Black Pearl',
     kicks: 2,
     pan: { kick: 0.1, kick2: -0.1 }, // right foot's drum on the right
     labels: { rim: 'Rimshot' },
@@ -61,7 +63,7 @@ export const KITS = {
     source: 'Roland TR-808',
     kicks: 1,
     alias: DOUBLE_PEDAL,
-    labels: { rim: 'Clap' },
+    labels: { rim: 'Clap', tamb: 'Maracas' },
     soft: [],
     room: { seconds: 1.8 },
   },

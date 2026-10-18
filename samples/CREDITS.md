@@ -19,14 +19,19 @@ samples**, not under the original libraries' names.
 - License: [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/)
 - Changes: each hit's 16 microphone channels were time-aligned (the kit was recorded through
   two audio interfaces) and mixed to mono; the overhead and room mics were high-passed. The
-  kit's two bass drums are *Kick* (right) and *Kick 2* (left); the *Rimshot* row uses the
-  snare rim shot. These files are released under CC BY 4.0.
+  kit's two bass drums are *Kick* (right) and *Kick 2* (left), its two 16" crashes *Crash*
+  and *Crash 2*; the *Rimshot* row uses the snare rim shot. These files are released under
+  CC BY 4.0.
+- The Aasimonster has no tambourine: `metal/tamb.wav` and `metal/tamb-soft.wav` come from
+  AVL Black Pearl (below, CC BY-SA 3.0).
 
 ## `rock/` and `jazz/`: AVL Drumkits by Glen MacArthur
 
-- `rock/`: *Red Zeppelin* (Ludwig kit, Sabian and Zildjian cymbals)
-- `jazz/`: *Blonde Bop* (TAMA kit, Zildjian, Sabian and Paiste cymbals), all but the snare,
-  which is played with brushes (see below)
+- `rock/`: *Red Zeppelin* (Ludwig kit, Sabian and Zildjian cymbals; Crash 2 is its 17"
+  Zildjian crash)
+- `jazz/`: *Blonde Bop* (TAMA kit, Zildjian, Sabian and Paiste cymbals; Crash 2 is its 17"
+  Sabian AAX), all but the snare, which is played with brushes (see below)
+- `metal/tamb*.wav`: the tambourine of *Black Pearl*
 - Source: <http://www.bandshed.net/avldrumkits/>, SFZ releases (2023)
 - License: [Creative Commons Attribution-ShareAlike 3.0](http://creativecommons.org/licenses/by-sa/3.0/),
   with the exception quoted below. These modified files are released under the same license.
@@ -68,4 +73,5 @@ The AVL Drumkits readme, kept here as its license asks:
 - Source: [machines.hyperreal.org](http://machines.hyperreal.org/), via
   [fluid-music/open-drums](https://github.com/fluid-music/open-drums/tree/475cc3314fe06f6d1af02e9790ad9707c1f2b26b/tr-808)
 - Files used: BD2575 (kick), SD5075 (snare), CP (clap, in the side stick row), HT50, MT50,
-  LT50 (toms), CH (closed hat and hat pedal), OH25 (open hat), CY2525 (ride), CY5075 (crash).
+  LT50 (toms), CH (closed hat and hat pedal), OH25 (open hat), CY2525 (ride), CY5075 (crash),
+  CY7575 (crash 2), MA (maracas, in the tambourine row).

@@ -10,10 +10,12 @@ const PIECES = {
   tom3: { cx: 296, cy: 236, r: 42, lugs: 8 },
   hat: { cx: 60, cy: 205, r: 34 },
   crash: { cx: 88, cy: 92, r: 52 },
+  crash2: { cx: 212, cy: 52, r: 42 },
+  tamb: { cx: 368, cy: 236, r: 20 },
   ride: { cx: 318, cy: 110, r: 58 },
 };
 // How long each piece glows after a hit, ms.
-const GLOW_MS = { crash: 900, ride: 450, hho: 500, hhc: 160, hhp: 180, tom1: 300, tom2: 320, tom3: 360, snare: 220, rim: 150, kick: 260, kick2: 260 };
+const GLOW_MS = { tamb: 240, crash2: 900, crash: 900, ride: 450, hho: 500, hhc: 160, hhp: 180, tom1: 300, tom2: 320, tom3: 360, snare: 220, rim: 150, kick: 260, kick2: 260 };
 
 function el(tag, attrs, parent) {
   const e = document.createElementNS(NS, tag);
@@ -104,8 +106,12 @@ export class KitView {
 
     this.cymbal(base, 'crash', PIECES.crash, 'Crash');
     glow('crash', 'circle', { cx: PIECES.crash.cx, cy: PIECES.crash.cy, r: PIECES.crash.r, class: 'glow-fill' });
+    this.cymbal(base, 'crash2', PIECES.crash2, 'Crash 2');
+    glow('crash2', 'circle', { cx: PIECES.crash2.cx, cy: PIECES.crash2.cy, r: PIECES.crash2.r, class: 'glow-fill' });
     this.cymbal(base, 'ride', PIECES.ride, 'Ride');
     glow('ride', 'circle', { cx: PIECES.ride.cx, cy: PIECES.ride.cy, r: PIECES.ride.r, class: 'glow-fill' });
+
+    this.tambourine(base, PIECES.tamb, glow);
 
     this.kitName = el('text', { x: 392, y: 312, 'text-anchor': 'end', class: 'kit-name' }, svg);
   }
@@ -134,6 +140,17 @@ export class KitView {
       el('circle', { cx: cx + (r + 3) * Math.cos(a), cy: cy + (r + 3) * Math.sin(a), r: 2, class: 'lug' }, g);
     }
     glow(id, 'circle', { cx, cy, r: r + 3, class: 'glow-fill' });
+  }
+
+  /** A tambourine: a wooden frame with pairs of jingles in slots around it. */
+  tambourine(parent, { cx, cy, r }, glow) {
+    const g = piece(parent, 'tamb', 'Tambourine');
+    el('circle', { cx, cy, r, class: 'frame' }, g);
+    for (let k = 0; k < 5; k++) {
+      const a = (k / 5) * 2 * Math.PI - Math.PI / 2;
+      el('rect', { x: cx + r * Math.cos(a) - 3, y: cy + r * Math.sin(a) - 2, width: 6, height: 4, rx: 1, class: 'jingle', transform: `rotate(${(a * 180) / Math.PI + 90} ${cx + r * Math.cos(a)} ${cy + r * Math.sin(a)})` }, g);
+    }
+    glow('tamb', 'circle', { cx, cy, r: r + 2, class: 'glow-fill' });
   }
 
   cymbal(parent, id, { cx, cy, r }, title, shift) {

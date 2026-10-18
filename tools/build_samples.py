@@ -27,9 +27,9 @@ TR808 = "https://raw.githubusercontent.com/fluid-music/open-drums/475cc3314fe06f
 FREESOUND = "https://cdn.freesound.org/previews/{}/{}_2272910-hq.mp3"
 
 # Peak level of each instrument's (hard) sample, and the longest it may ring, in seconds.
-LEVEL = {"kick": 0.95, "kick2": 0.95, "snare": 0.9, "rim": 0.6, "tom1": 0.8, "tom2": 0.8, "tom3": 0.85,
+LEVEL = {"tamb": 0.45, "crash2": 0.55, "kick": 0.95, "kick2": 0.95, "snare": 0.9, "rim": 0.6, "tom1": 0.8, "tom2": 0.8, "tom3": 0.85,
          "hhc": 0.45, "hho": 0.45, "hhp": 0.35, "ride": 0.45, "crash": 0.55}
-LONGEST = {"kick": 0.9, "kick2": 0.9, "snare": 0.9, "rim": 0.4, "tom1": 1.2, "tom2": 1.4, "tom3": 1.6,
+LONGEST = {"tamb": 0.7, "crash2": 3.0, "kick": 0.9, "kick2": 0.9, "snare": 0.9, "rim": 0.4, "tom1": 1.2, "tom2": 1.4, "tom3": 1.6,
            "hhc": 0.5, "hho": 1.2, "hhp": 0.5, "ride": 2.5, "crash": 3.0}
 SEMITONE = 2 ** (1 / 12)
 
@@ -40,16 +40,20 @@ AVL_KITS = {
         "kick": "36-Ludwig-26-Kick", "snare": "38-Ludwig-14-Snare", "rim": "37-Ludwig-14-SideStick",
         "tom1": ("45-Ludwig-14-Tom", SEMITONE ** 3), "tom2": "45-Ludwig-14-Tom", "tom3": "41-Ludwig-16-FloorTom",
         "hhc": "42-Sabian-13-HatClosed", "hho": "46-Sabian-13-HatSemi", "hhp": "44-Sabian-13-HatPedal",
-        "ride": "51-Zildjian-24-Ride", "crash": "49-Zildjian-20-Crash",
+        "ride": "51-Zildjian-24-Ride", "crash": "49-Zildjian-20-Crash", "crash2": "57-Zildjian-17-Crash",
+        "tamb": "54-Tambourine",
     }),
     "jazz": ("BLONDE_BOP_SFZ", {  # the snare is played with brushes, from BRUSH_SNARE
         "kick": "36-TAMA-18-Kick", "rim": "37-TAMA-13-SideStick",
         "tom1": "45-TAMA-10-Tom", "tom2": ("41-TAMA-14-FloorTom", SEMITONE ** 4), "tom3": "41-TAMA-14-FloorTom",
         "hhc": "42-Zildjian-13-HatClosed", "hho": "46-Zildjian-13-HatSemi", "hhp": "44-Zildjian-13-HatPedal",
-        "ride": "51-SabianAAX-20-RideTip", "crash": "49-Paiste2002-16-Crash",
+        "ride": "51-SabianAAX-20-RideTip", "crash": "49-Paiste2002-16-Crash", "crash2": "57-SabianAAX-17-Crash2",
+        "tamb": "54-GP-10-Tambourine",
     }),
 }
-AVL_SOFT = {"kick", "snare", "tom1", "tom2", "tom3", "hhc"}
+AVL_SOFT = {"kick", "snare", "tom1", "tom2", "tom3", "hhc", "tamb"}
+# The Aasimonster has no tambourine; the metal kit borrows AVL Black Pearl's.
+METAL_TAMBOURINE = ("BLACK_PEARL_2023_repack", "54-Tambourine")
 
 # Freesound sound ids of the brushed snare: a hard hit, and a normal one for ghost notes.
 BRUSH_SNARE = {"": 125021, "-soft": 125022}
@@ -71,6 +75,7 @@ AASI_KIT = {
     "hhp": ("hihat_closed3", {"Hihat": 1, "OH L": 0.2, "OH R": 0.2}),
     "ride": ("ride", {"Ride": 1, "OH L": 0.4, "OH R": 0.4}),
     "crash": ("crash1", {"OH L": 1, "OH R": 1, "Amb L": 0.4, "Amb R": 0.4}),
+    "crash2": ("crash2", {"OH L": 1, "OH R": 1, "Amb L": 0.4, "Amb R": 0.4}),
 }
 AASI_SOFT = {"kick": 0.12, "kick2": 0.12, "snare": 0.06, "tom1": 0.12, "tom2": 0.12, "tom3": 0.12, "hhc": 0.12}
 AASI_HARD = {"hhp": 0.15}  # the pedal is a light closed-hat hit, not the loudest one
@@ -81,7 +86,8 @@ TR808_KIT = {
     "kick": "BD/BD2575.WAV", "snare": "SD/SD5075.WAV", "rim": "CP/CP.WAV",
     "tom1": "HT/HT50.WAV", "tom2": "MT/MT50.WAV", "tom3": "LT/LT50.WAV",
     "hhc": "CH/CH.WAV", "hho": "OH/OH25.WAV", "hhp": "CH/CH.WAV",
-    "ride": "CY/CY2525.WAV", "crash": "CY/CY5075.WAV",
+    "ride": "CY/CY2525.WAV", "crash": "CY/CY5075.WAV", "crash2": "CY/CY7575.WAV",
+    "tamb": "MA/MA.WAV",  # the 808 has no tambourine: its maracas play that row
 }
 
 
@@ -253,5 +259,6 @@ if __name__ == "__main__":
     save("jazz", "snare", brushes[""], brushes["-soft"])
     print("metal")
     build_aasimonster()
+    build_avl("metal", METAL_TAMBOURINE[0], {"tamb": METAL_TAMBOURINE[1]})
     print("electronic")
     build_808()

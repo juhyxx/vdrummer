@@ -62,8 +62,8 @@ Details and the full license notes are in [`samples/CREDITS.md`](samples/CREDITS
 
 ## Features
 
-- **Grid**: one row per instrument (crash, ride, open/closed hi-hat, three toms, snare,
-  side stick, kick, kick 2, hi-hat pedal), one column per tick. Steps of 1/4, 1/8, 1/8 triplets,
+- **Grid**: one row per instrument (tambourine, two crashes, ride, open/closed hi-hat,
+  three toms, snare, side stick, kick, kick 2, hi-hat pedal), one column per tick. Steps of 1/4, 1/8, 1/8 triplets,
   1/16 or 1/16 triplets; meters from 2/4 to 7/4. Changing the resolution moves every hit
   to the nearest new step.
 - **Hits** come in three levels. Each click on a cell steps it through off → ghost (dim,
@@ -79,13 +79,14 @@ Details and the full license notes are in [`samples/CREDITS.md`](samples/CREDITS
   Bop) with the snare played with brushes, and Electro a Roland TR-808. The other kits have
   one bass drum, so *Kick 2* is a double pedal on it. Ghost notes on the acoustic kits use
   softly played hits, not just quieter ones. A closed hi-hat chokes an open one. The side stick row is a
-  rimshot in the Metal kit and a clap in Electro. See [Samples](#samples).
+  rimshot in the Metal kit and a clap in Electro, and the tambourine row is maracas in
+  Electro. See [Samples](#samples).
 - **Kit view**: the drums from above, each outlined in its colour and lighting up in it as
   it plays (brightest for accents); press a piece to play it (shift-press the hi-hat for an
   open hat). The kit picker sits on top of it. *View: Kit* hides the view (the picker
   moves to the toolbar), and the grid takes the whole width.
 - The grid's cells grow to fill its screen, in width and (on wide screens) height.
-- **Rhythms**: 31 prepared grooves in four groups, each loading with its genre's kit and
+- **Rhythms**: 32 prepared grooves in four groups, each loading with its genre's kit and
   tempo: rock & pop, metal (with double bass split between the feet), jazz & latin (swing,
   waltz, bossa nova, samba, baião, salsa, cha-cha-chá, songo, Afro-Cuban 6/8) and
   electronic. Save your own under a name; they're kept in `localStorage`, as are the
@@ -95,7 +96,8 @@ Details and the full license notes are in [`samples/CREDITS.md`](samples/CREDITS
   or drum plugin. Ghost, normal and accented hits are velocities 40, 90 and 120.
 - **Stereo**: each piece is panned where a standard drum mix puts it, from the drummer's
   seat as in the kit view: kick and snare in the middle, hi-hats (50 %) and crash (60 %)
-  left, toms from left (high, 30 %) to right (floor, 55 %), ride right (60 %). The metal
+  left, toms from left (high, 30 %) to right (floor, 55 %), ride (60 %), crash 2 (45 %)
+  and tambourine (35 %) right. The metal
   kit's two bass drums sit slightly apart; elsewhere Kick 2 is the same drum.
 - **Reverb** on the whole kit, from dry to a wash (default 30 %). Each kit sits in its own
   room, from a tight one for metal to a longer one for jazz and electro; the tail darkens as

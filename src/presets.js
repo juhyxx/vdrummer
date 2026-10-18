@@ -58,6 +58,15 @@ const rock = [
     },
   },
   {
+    id: 'motown', name: 'Motown', tempo: 118, div: 2,
+    rows: {
+      tamb: '-- X- -- X-',
+      hhc: 'xx xx xx xx',
+      snare: '-- X- -- X-',
+      kick: 'x- -x x- --',
+    },
+  },
+  {
     id: 'funk', name: 'Funk', tempo: 96, div: 4,
     rows: {
       hhc: 'Xgxg Xgxg Xgxg Xgxg',

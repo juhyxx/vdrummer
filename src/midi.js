@@ -4,8 +4,11 @@ import { swingDelay } from './sequencer.js';
 
 const PPQ = 480; // ticks per quarter note
 // General MIDI percussion keys, played on channel 10.
-const KEYS = { crash: 49, ride: 51, hho: 46, hhc: 42, tom1: 48, tom2: 45, tom3: 43, snare: 38, rim: 37, kick: 36, kick2: 35, hhp: 44 };
-const RIM_KEYS = { metal: 40, electronic: 39 }; // there the side stick row is a rimshot / a clap
+const KEYS = { tamb: 54, crash2: 57, crash: 49, ride: 51, hho: 46, hhc: 42, tom1: 48, tom2: 45, tom3: 43, snare: 38, rim: 37, kick: 36, kick2: 35, hhp: 44 };
+const KIT_KEYS = { // rows that play something else in a kit: rimshot, clap, maracas
+  metal: { rim: 40 },
+  electronic: { rim: 39, tamb: 70 },
+};
 const VELOCITY = [0, 40, 90, 120]; // ghost, hit, accent
 
 /** The pattern as a Standard MIDI File (format 0): one loop, with its tempo, meter and swing. */
@@ -15,7 +18,7 @@ export function toMidi(p) {
   const noteTicks = Math.min(60, Math.floor(stepTicks / 2));
   const events = []; // [tick, order (offs first), bytes]
   for (const { id } of INSTRUMENTS) {
-    const key = id === 'rim' ? (RIM_KEYS[p.kit] ?? KEYS.rim) : KEYS[id];
+    const key = KIT_KEYS[p.kit]?.[id] ?? KEYS[id];
     p.notes[id].forEach((level, step) => {
       if (!level) return;
       const tick = Math.round(step * stepTicks + swingDelay(p, step, stepTicks));
