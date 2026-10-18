@@ -4,8 +4,11 @@ import { stepsPerBar, totalSteps } from './pattern.js';
 // Counting syllables shown above the steps of a beat ("1 e + a" for 16ths).
 const COUNT = { 1: [''], 2: ['', '+'], 3: ['', '+', 'a'], 4: ['', 'e', '+', 'a'], 6: ['', '·', '·', '+', '·', '·'] };
 const CELL_MIN = 20; // px
-const CELL_MAX = 56;
+const CELL_MAX = 200;
+const ROW_MIN = 22;
+const ROW_MAX = 64;
 const GAP = 3;
+const HEAD = 22 + 16 + 12 + 14; // header rows, and the grid's top and bottom padding (see styles.css)
 
 const ROW = Object.fromEntries(INSTRUMENTS.map((inst, r) => [inst.id, r]));
 
@@ -136,7 +139,10 @@ export class Grid {
     this.heads.forEach((h, b) => h.classList.toggle('sel', b === bar));
   }
 
-  /** Sizes the cells to fill the screen's width, within limits. */
+  /**
+   * Sizes the cells to fill the screen, within limits: always its width, and its height too
+   * where the screen has a height of its own (on narrow screens the grid sets the height).
+   */
   fit() {
     if (!this.p) return;
     const total = totalSteps(this.p);
@@ -144,6 +150,13 @@ export class Grid {
     const avail = this.scroller.clientWidth - labelW - 24;
     const w = Math.max(CELL_MIN, Math.min(CELL_MAX, Math.floor(avail / total - GAP)));
     this.el.style.setProperty('--cw', `${w}px`);
+    if (getComputedStyle(this.scroller).position === 'absolute') {
+      const rows = INSTRUMENTS.length;
+      const h = Math.floor((this.scroller.clientHeight - HEAD - GAP * (rows + 1)) / rows);
+      this.el.style.setProperty('--ch', `${Math.max(ROW_MIN, Math.min(ROW_MAX, h))}px`);
+    } else {
+      this.el.style.removeProperty('--ch');
+    }
     if (this.playStep >= 0) this.setPlayhead(this.playStep, false);
   }
 
@@ -179,7 +192,7 @@ export class Grid {
   /** Lights up the cells that just played. */
   flash(step, hits) {
     for (const [id] of hits) {
-      this.cells[ROW[id]]?.[step]?.animate([{ filter: 'brightness(1.9)' }, { filter: 'brightness(1)' }], { duration: 180, easing: 'ease-out' });
+      this.cells[ROW[id]]?.[step]?.animate([{ filter: 'brightness(1.45)' }, { filter: 'brightness(1)' }], { duration: 180, easing: 'ease-out' });
     }
   }
 

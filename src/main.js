@@ -12,7 +12,7 @@ import { Sequencer } from './sequencer.js';
 import { VERSION } from './version.js';
 
 const KEYS = { settings: 'vdrummer.settings', pattern: 'vdrummer.pattern', library: 'vdrummer.library' };
-const DEFAULTS = { volume: 80 };
+const DEFAULTS = { volume: 80, reverb: 30, showKit: true };
 const UNDO_LIMIT = 100;
 
 const $ = (id) => document.getElementById(id);
@@ -27,6 +27,8 @@ const els = {
   remove: $('remove'),
   volume: $('volume'),
   volumeValue: $('volumeValue'),
+  reverb: $('reverb'),
+  reverbValue: $('reverbValue'),
   meter: $('meter'),
   division: $('division'),
   barsDown: $('barsDown'),
@@ -40,6 +42,8 @@ const els = {
   undo: $('undo'),
   redo: $('redo'),
   midi: $('midi'),
+  showKit: $('showKit'),
+  stage: $('stage'),
   readout: $('readout'),
   bpm: $('bpm'),
   pos: $('pos'),
@@ -103,6 +107,7 @@ document.addEventListener('visibilitychange', () => document.visibilityState ===
 
 const engine = new DrumEngine();
 engine.volume = settings.volume / 100;
+engine.reverbAmount = settings.reverb / 100;
 const seq = new Sequencer(engine, () => pattern);
 const kitView = new KitView($('kit'), (id) => preview(id, 2));
 const grid = new Grid($('gridScroller'), {
@@ -553,6 +558,14 @@ els.volume.addEventListener('input', () => {
   persist();
 });
 
+els.reverb.addEventListener('input', () => {
+  settings.reverb = Number(els.reverb.value);
+  els.reverbValue.textContent = `${settings.reverb}%`;
+  setFill(els.reverb);
+  engine.setReverb(settings.reverb / 100);
+  persist();
+});
+
 els.meter.addEventListener('change', () => edit((p) => setBeats(p, Number(els.meter.value))));
 els.division.addEventListener('change', () => edit((p) => setDivision(p, Number(els.division.value))));
 els.barsDown.addEventListener('click', () => edit((p) => setBars(p, Math.max(1, p.bars - 1))));
@@ -576,6 +589,17 @@ els.clearBar.addEventListener('click', () => edit((p) => clearBar(p, state.bar))
 els.undo.addEventListener('click', undo);
 els.redo.addEventListener('click', redo);
 els.midi.addEventListener('click', exportMidi);
+
+function showKitView() {
+  els.showKit.checked = settings.showKit;
+  els.stage.classList.toggle('no-kit', !settings.showKit);
+}
+
+els.showKit.addEventListener('change', () => {
+  settings.showKit = els.showKit.checked;
+  showKitView();
+  persist();
+});
 
 document.addEventListener('keydown', (e) => {
   if (els.dialog.open || e.target.matches('input[type="text"], select, textarea')) return;
@@ -602,6 +626,10 @@ document.querySelector('.brand').title = `vdrummer ${VERSION}`;
 els.volume.value = settings.volume;
 els.volumeValue.textContent = `${settings.volume}%`;
 setFill(els.volume);
+showKitView();
+els.reverb.value = settings.reverb;
+els.reverbValue.textContent = `${settings.reverb}%`;
+setFill(els.reverb);
 fillRhythms();
 render();
 useKit();

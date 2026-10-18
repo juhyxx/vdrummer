@@ -283,9 +283,11 @@ input[type="range"]::-moz-range-thumb {
   display: grid;
   grid-template-columns: minmax(280px, 32%) minmax(0, 1fr);
   gap: 16px;
-  min-height: 360px;
+  min-height: 420px;
   margin: 0 20px 20px;
 }
+.stage.no-kit { grid-template-columns: minmax(0, 1fr); }
+.stage.no-kit .kit-screen { display: none; }
 
 .screen {
   position: relative;
@@ -306,7 +308,9 @@ input[type="range"]::-moz-range-thumb {
   pointer-events: none;
 }
 
-.scroller { position: relative; overflow: auto; overscroll-behavior-x: contain; }
+/* The grid scrolls inside its screen, which takes the stage's height: grid.js sizes the
+   cells to fill it. On narrow screens (below) it's the other way round. */
+.scroller { position: absolute; inset: 0; overflow: auto; overscroll-behavior-x: contain; }
 
 /* ------------------------------------------------------------- kit view */
 
@@ -332,7 +336,7 @@ input[type="range"]::-moz-range-thumb {
 .kit-base .piece:hover .shell, .kit-base .piece:hover .cym, .kit-base .piece:hover .pedal { stroke-opacity: 0.9; }
 
 .glow-fill, .glow-ring { pointer-events: none; }
-.glow-fill { fill: currentColor; fill-opacity: 0.3; stroke: currentColor; stroke-width: 3; }
+.glow-fill { fill: currentColor; fill-opacity: 0.22; stroke: currentColor; stroke-width: 2.5; }
 .glow-ring { fill: none; stroke: currentColor; stroke-width: 4; }
 .glow-ring.dashed { stroke-dasharray: 6 5; stroke-width: 3; }
 .kit-name { fill: var(--faint); font: 10px "Silkscreen", monospace; text-transform: uppercase; letter-spacing: 0.06em; }
@@ -381,7 +385,7 @@ input[type="range"]::-moz-range-thumb {
   margin-right: 8px;
   border-radius: 50%;
   background: var(--c);
-  box-shadow: 0 0 5px var(--c);
+  box-shadow: 0 0 3px var(--c);
 }
 .row-label:hover { color: var(--c); text-shadow: 0 0 5px var(--c); }
 .row-label:focus-visible { outline: 1px solid var(--led); outline-offset: -2px; }
@@ -426,15 +430,15 @@ input[type="range"]::-moz-range-thumb {
 .cell:hover { outline: 1px solid rgba(255, 255, 255, 0.25); outline-offset: -1px; }
 /* hits in the row's colour: ghost dim with a dot, accent with a white-hot core */
 .cell[data-v="1"] { background: color-mix(in srgb, var(--c) 30%, transparent); box-shadow: none; }
-.cell[data-v="2"] { background: var(--c); box-shadow: 0 0 6px color-mix(in srgb, var(--c) 70%, transparent); }
-.cell[data-v="3"] { background: var(--c); box-shadow: 0 0 12px var(--c), 0 0 3px var(--c); }
+.cell[data-v="2"] { background: var(--c); box-shadow: 0 0 4px color-mix(in srgb, var(--c) 45%, transparent); }
+.cell[data-v="3"] { background: var(--c); box-shadow: 0 0 7px color-mix(in srgb, var(--c) 70%, transparent); }
 .cell[data-v="1"]::after, .cell[data-v="3"]::after {
   content: "";
   position: absolute;
   border-radius: 50%;
 }
 .cell[data-v="1"]::after { inset: 40%; background: rgba(255, 255, 255, 0.35); }
-.cell[data-v="3"]::after { inset: 28%; border-radius: 2px; background: rgba(255, 255, 255, 0.85); box-shadow: 0 0 6px #fff; }
+.cell[data-v="3"]::after { inset: 28%; border-radius: 2px; background: rgba(255, 255, 255, 0.75); box-shadow: 0 0 3px rgba(255, 255, 255, 0.8); }
 
 .playhead {
   position: absolute;
@@ -501,6 +505,8 @@ dialog input[hidden] { display: none; }
 
 @media (max-width: 960px) {
   .stage { grid-template-columns: minmax(0, 1fr); grid-template-rows: 260px auto; }
+  .stage.no-kit { grid-template-rows: auto; }
+  .scroller { position: relative; }
 }
 
 @media (max-width: 640px) {

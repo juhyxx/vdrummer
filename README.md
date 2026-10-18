@@ -79,11 +79,12 @@ Details and the full license notes are in [`samples/CREDITS.md`](samples/CREDITS
   Bop) with the snare played with brushes, and Electro a Roland TR-808. The other kits have
   one bass drum, so *Kick 2* is a double pedal on it. Ghost notes on the acoustic kits use
   softly played hits, not just quieter ones. Each piece is panned as the drummer hears it,
-  with a light room reverb, and a closed hi-hat chokes an open one. The side stick row is a
+  and a closed hi-hat chokes an open one. The side stick row is a
   rimshot in the Metal kit and a clap in Electro. See [Samples](#samples).
 - **Kit view**: the drums from above, each outlined in its colour and lighting up in it as
   it plays (brightest for accents); press a piece to play it (shift-press the hi-hat for an
-  open hat).
+  open hat). *View: Kit* hides it, and the grid takes the whole width.
+- The grid's cells grow to fill its screen, in width and (on wide screens) height.
 - **Rhythms**: 31 prepared grooves in four groups, each loading with its genre's kit and
   tempo: rock & pop, metal (with double bass split between the feet), jazz & latin (swing,
   waltz, bossa nova, samba, baião, salsa, cha-cha-chá, songo, Afro-Cuban 6/8) and
@@ -92,6 +93,9 @@ Details and the full license notes are in [`samples/CREDITS.md`](samples/CREDITS
 - **MIDI export**: *MIDI* downloads the rhythm as a Standard MIDI File, one loop with its
   tempo, meter and swing, on General MIDI drum notes (channel 10), so it plays in any DAW
   or drum plugin. Ghost, normal and accented hits are velocities 40, 90 and 120.
+- **Reverb** on the whole kit, from dry to a wash (default 30 %). Each kit sits in its own
+  room, from a tight one for metal to a longer one for jazz and electro; the tail darkens as
+  it decays, and the low end stays dry so the kick keeps its punch.
 - Tempo 40–260 BPM with tap tempo, swing for 1/8 and 1/16 grids, undo and redo
   (Ctrl/Cmd+Z, Shift+Ctrl/Cmd+Z).
 - Timing runs on the audio clock with a lookahead scheduler driven from a worker, so it

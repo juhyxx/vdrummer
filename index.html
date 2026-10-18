@@ -72,6 +72,11 @@
       <span class="module-label">Volume <output id="volumeValue"></output></span>
       <input type="range" id="volume" min="0" max="100" step="1">
     </label>
+
+    <label class="module">
+      <span class="module-label">Reverb <output id="reverbValue"></output></span>
+      <input type="range" id="reverb" min="0" max="100" step="1" title="Room reverb on the whole kit">
+    </label>
   </div>
 
   <div class="toolbar edit">
@@ -121,9 +126,16 @@
         <button id="midi" class="btn" type="button" title="Download the rhythm as a MIDI file (General MIDI drums, channel 10)">MIDI</button>
       </div>
     </div>
+
+    <div class="module" role="group" aria-labelledby="viewLabel">
+      <span class="module-label" id="viewLabel">View</span>
+      <div class="module-row">
+        <label class="btn toggle" title="Show the drum kit"><input type="checkbox" id="showKit">Kit</label>
+      </div>
+    </div>
   </div>
 
-  <main class="stage">
+  <main class="stage" id="stage">
     <section class="screen kit-screen" aria-label="Drum kit seen from above">
       <svg id="kit"></svg>
     </section>

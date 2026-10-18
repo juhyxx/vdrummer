@@ -20,8 +20,8 @@ export const INSTRUMENTS = [
  * made by tools/build_samples.py; instruments listed in `soft` also have a softly played hit
  * (<instrument>-soft.wav) for ghost notes. `kicks` is the number of bass drums: with one,
  * Kick 2 is a double pedal on the same drum (`alias` plays another instrument's samples).
- * `labels` renames rows whose sound differs, and `room` is a light reverb: its length and
- * how much of each hit is sent to it.
+ * `labels` renames rows whose sound differs, and `room` is the size of the room the reverb
+ * puts the kit in: how long its tail rings.
  */
 const ACOUSTIC_SOFT = ['kick', 'snare', 'tom1', 'tom2', 'tom3', 'hhc'];
 const DOUBLE_PEDAL = { kick2: 'kick' };
@@ -33,7 +33,7 @@ export const KITS = {
     kicks: 2,
     labels: { rim: 'Rimshot' },
     soft: [...ACOUSTIC_SOFT, 'kick2'],
-    room: { seconds: 0.6, send: 0.04 },
+    room: { seconds: 0.8 },
   },
   rock: {
     name: 'Rock',
@@ -41,7 +41,7 @@ export const KITS = {
     kicks: 1,
     alias: DOUBLE_PEDAL,
     soft: ACOUSTIC_SOFT,
-    room: { seconds: 1, send: 0.08 },
+    room: { seconds: 1.3 },
   },
   jazz: {
     name: 'Jazz',
@@ -50,7 +50,7 @@ export const KITS = {
     alias: DOUBLE_PEDAL,
     labels: { snare: 'Snare brush' },
     soft: ACOUSTIC_SOFT,
-    room: { seconds: 1.2, send: 0.1 },
+    room: { seconds: 1.6 },
   },
   electronic: {
     name: 'Electro',
@@ -59,7 +59,7 @@ export const KITS = {
     alias: DOUBLE_PEDAL,
     labels: { rim: 'Clap' },
     soft: [],
-    room: { seconds: 1.4, send: 0.1 },
+    room: { seconds: 1.8 },
   },
 };
 

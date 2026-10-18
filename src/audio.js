@@ -26,9 +26,13 @@ async function loadKit(id) {
   return kit;
 }
 
+// Send level to the reverb at 100 %. The convolver normalises its impulse response, so the
+// wet signal comes out about as loud as the dry one.
+const MAX_WET = 0.6;
+
 /**
- * Plays the drum samples. Each instrument has its own bus, panned to its place in the kit
- * and sent to a small room reverb.
+ * Plays the drum samples. Each instrument has its own bus, panned to its place in the kit;
+ * the whole kit then goes through one room reverb, whose amount the player sets.
  */
 export class DrumEngine {
   constructor() {
@@ -37,6 +41,7 @@ export class DrumEngine {
     this.buffers = null;
     this.kit = null;
     this.volume = 0.8;
+    this.reverbAmount = 0.3;
     this.openHat = null;
   }
 
@@ -73,33 +78,56 @@ export class DrumEngine {
     this.master = new GainNode(ctx, { gain: this.volume ** 2 });
     const limiter = new DynamicsCompressorNode(ctx, { threshold: -10, knee: 10, ratio: 4, attack: 0.003, release: 0.2 });
     this.master.connect(limiter).connect(ctx.destination);
-    this.send = new GainNode(ctx, { gain: 0 });
+    // kit → master, and kit → send → low cut (keeps the kick's boom dry) → reverb → master
+    const kit = new GainNode(ctx);
+    kit.connect(this.master);
+    this.send = new GainNode(ctx, { gain: this.reverbAmount * MAX_WET });
+    this.lowCut = new BiquadFilterNode(ctx, { type: 'highpass', frequency: 200 });
+    kit.connect(this.send).connect(this.lowCut);
     this.buses = {};
     for (const inst of INSTRUMENTS) {
       const pan = new StereoPannerNode(ctx, { pan: inst.pan });
-      pan.connect(this.master);
-      pan.connect(this.send);
+      pan.connect(kit);
       this.buses[inst.id] = pan;
     }
     this.setRoom();
   }
 
-  /** Builds the current kit's reverb: decaying noise as the impulse response. */
+  /**
+   * Builds the current kit's room: an impulse response of noise that decays to −60 dB over
+   * the room's length and gets darker as it goes (walls soak up the highs first), after a
+   * short pre-delay. Each channel has its own noise, for a wide stereo tail.
+   */
   setRoom() {
-    const { seconds, send } = KITS[this.kit ?? 'rock'].room;
+    const { seconds } = KITS[this.kit ?? 'rock'].room;
+    if (this.reverb && this.roomSeconds === seconds) return;
+    this.roomSeconds = seconds;
     const ctx = this.ctx;
-    const len = Math.round(seconds * ctx.sampleRate);
-    const ir = ctx.createBuffer(2, len, ctx.sampleRate);
+    const rate = ctx.sampleRate;
+    const pre = Math.round(0.012 * rate);
+    const len = Math.round(seconds * rate);
+    const ir = ctx.createBuffer(2, pre + len, rate);
     for (let c = 0; c < 2; c++) {
       const d = ir.getChannelData(c);
-      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len) ** 4;
+      let lp = 0;
+      for (let i = 0; i < len; i++) {
+        const t = i / rate;
+        const k = 0.08 + 0.6 * Math.exp((-3 * t) / seconds); // one-pole low-pass, closing over time
+        lp += k * (Math.random() * 2 - 1 - lp);
+        d[pre + i] = lp * Math.exp((-6.9 * t) / seconds);
+      }
     }
     // A convolver's buffer can't always be replaced in place, so swap in a new node.
     this.reverb?.disconnect();
-    this.send.disconnect();
+    this.lowCut.disconnect();
     this.reverb = new ConvolverNode(ctx, { buffer: ir });
-    this.send.connect(this.reverb).connect(this.master);
-    this.send.gain.value = send;
+    this.lowCut.connect(this.reverb).connect(this.master);
+  }
+
+  /** Reverb amount, 0–1, for the whole kit. */
+  setReverb(v) {
+    this.reverbAmount = v;
+    if (this.ctx) this.send.gain.setTargetAtTime(v * MAX_WET, this.ctx.currentTime, 0.03);
   }
 
   setVolume(v) {

@@ -54,7 +54,7 @@ export class KitView {
     svg.setAttribute('viewBox', '0 0 400 320');
     const defs = el('defs', {}, svg);
     const f = el('filter', { id: 'kit-glow', x: '-50%', y: '-50%', width: '200%', height: '200%' }, defs);
-    el('feGaussianBlur', { stdDeviation: 5, result: 'blur' }, f);
+    el('feGaussianBlur', { stdDeviation: 3.5, result: 'blur' }, f);
     const merge = el('feMerge', {}, f);
     el('feMergeNode', { in: 'blur' }, merge);
     el('feMergeNode', { in: 'SourceGraphic' }, merge);
@@ -155,7 +155,7 @@ export class KitView {
   }
 
   flash(id, level) {
-    const peak = [0, 0.35, 0.75, 1][level] ?? 0.75;
+    const peak = [0, 0.3, 0.65, 0.85][level] ?? 0.65;
     for (const [node, brightness] of this.glows[id] ?? []) {
       node.style.color = colorOf(id);
       node.animate([{ opacity: peak * brightness }, { opacity: 0 }], { duration: GLOW_MS[id] ?? 250, easing: 'cubic-bezier(0.1, 0.7, 0.3, 1)' });
