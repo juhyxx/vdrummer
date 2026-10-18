@@ -1,6 +1,7 @@
 // Prepared rhythms, grouped by genre; each loads with its genre's kit.
 // Rows: '-' rest, 'g' ghost, 'x' hit, 'X' accent, one character per step, spaced by beat.
-// Double bass parts alternate feet: kick is the right foot, kick2 the left.
+// Double bass parts alternate feet: kick is the right foot, kick2 the left. Crashes use
+// both sides: crash is Crash L, crash2 Crash R. '|' marks bars, and is ignored too.
 // A row covering one bar repeats over all bars (see fromPreset in pattern.js).
 // `div` is the resolution in steps per beat: 2 = 1/8, 3 = 1/8 triplets, 4 = 1/16.
 
@@ -29,15 +30,17 @@ const rock = [
     },
   },
   {
-    id: 'rockfill', name: 'Beat with fill', tempo: 112, div: 4, bars: 2,
+    // a crash on each side, then the fill
+    id: 'rockfill', name: 'Beat with fill', tempo: 112, div: 4, bars: 4,
     rows: {
-      crash: 'x--- ---- ---- ---- ---- ---- ---- ----',
-      hhc: '--x- x-x- x-x- x-x- x-x- x-x- ---- ----',
-      snare: '---- X--- ---- X--- ---- X--- Xxxx ----',
-      tom1: '---- ---- ---- ---- ---- ---- ---- xx--',
-      tom2: '---- ---- ---- ---- ---- ---- ---- --x-',
-      tom3: '---- ---- ---- ---- ---- ---- ---- ---x',
-      kick: 'x--- --x- x-x- ---- x--- --x- x--- ----',
+      crash: 'x--- ---- ---- ---- | ---- ---- ---- ---- | ---- ---- ---- ---- | ---- ---- ---- ----',
+      crash2: '---- ---- ---- ---- | ---- ---- ---- ---- | x--- ---- ---- ---- | ---- ---- ---- ----',
+      hhc: '--x- x-x- x-x- x-x- | x-x- x-x- x-x- x-x- | --x- x-x- x-x- x-x- | x-x- x-x- ---- ----',
+      snare: '---- X--- ---- X--- | ---- X--- ---- X--- | ---- X--- ---- X--- | ---- X--- Xxxx ----',
+      tom1: '---- ---- ---- ---- | ---- ---- ---- ---- | ---- ---- ---- ---- | ---- ---- ---- xx--',
+      tom2: '---- ---- ---- ---- | ---- ---- ---- ---- | ---- ---- ---- ---- | ---- ---- ---- --x-',
+      tom3: '---- ---- ---- ---- | ---- ---- ---- ---- | ---- ---- ---- ---- | ---- ---- ---- ---x',
+      kick: 'x--- --x- x-x- ---- | x--- --x- x-x- ---- | x--- --x- x-x- ---- | x--- --x- x--- ----',
     },
   },
   {
@@ -105,7 +108,8 @@ const metal = [
     id: 'doublebass', name: 'Double bass', tempo: 150, div: 4,
     rows: {
       crash: 'x--- ---- ---- ----',
-      ride: '---- x--- x--- x---',
+      crash2: '---- ---- x--- ----',
+      ride: '---- x--- ---- x---',
       snare: '---- X--- ---- X---',
       kick: 'x-x- x-x- x-x- x-x-',
       kick2: '-x-x -x-x -x-x -x-x',
@@ -115,7 +119,8 @@ const metal = [
     id: 'blast', name: 'Blast beat', tempo: 180, div: 4,
     rows: {
       crash: 'x--- ---- ---- ----',
-      ride: '--x- x-x- x-x- x-x-',
+      crash2: '---- ---- x--- ----',
+      ride: '--x- x-x- --x- x-x-',
       snare: '-x-x -x-x -x-x -x-x',
       kick: 'x-x- x-x- x-x- x-x-',
     },
@@ -124,7 +129,8 @@ const metal = [
     id: 'thrash', name: 'Thrash', tempo: 200, div: 2,
     rows: {
       crash: 'x- -- -- --',
-      ride: '-- x- x- x-',
+      crash2: '-- -- x- --',
+      ride: '-- x- -- x-',
       snare: '-X -X -X -X',
       kick: 'x- x- x- x-',
     },
@@ -132,7 +138,8 @@ const metal = [
   {
     id: 'gallop', name: 'Gallop', tempo: 150, div: 4,
     rows: {
-      crash: 'x--- x--- x--- x---',
+      crash: 'x--- ---- x--- ----',
+      crash2: '---- x--- ---- x---',
       snare: '---- X--- ---- X---',
       kick: 'x-x- x-x- x-x- x-x-',
       kick2: '---x ---x ---x ---x',
@@ -142,7 +149,8 @@ const metal = [
     id: 'dbeat', name: 'D-beat', tempo: 170, div: 2,
     rows: {
       crash: 'x- -- -- --',
-      hhc: '-x xx xx xx',
+      crash2: '-- -- x- --',
+      hhc: '-x xx -x xx',
       snare: '-- X- -- X-',
       kick: 'x- -x x- -x',
     },
@@ -150,7 +158,8 @@ const metal = [
   {
     id: 'breakdown', name: 'Breakdown', tempo: 110, div: 4, bars: 2,
     rows: {
-      crash: 'x--- x--- x--- x---',
+      crash: 'x--- ---- x--- ----',
+      crash2: '---- x--- ---- x---',
       snare: '---- ---- X--- ----',
       kick: 'x--x --x- --x- -x-- x--x --x- ---- x-x-',
       kick2: '-x-- ---- ---- ---- -x-- ---- ---- -x-x',

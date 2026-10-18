@@ -85,7 +85,7 @@ const SYMBOLS = { '-': 0, g: 1, x: 2, X: 3 };
 
 /**
  * Builds a pattern from a preset written as text: one string per instrument, one character
- * per step ('-' rest, 'g' ghost, 'x' hit, 'X' accent); spaces are ignored. A row shorter
+ * per step ('-' rest, 'g' ghost, 'x' hit, 'X' accent); spaces and '|' are ignored. A row shorter
  * than the loop repeats, so a one-bar row fills every bar.
  */
 export function fromPreset(preset) {
@@ -101,7 +101,7 @@ export function fromPreset(preset) {
   };
   const total = totalSteps(p);
   for (const { id } of INSTRUMENTS) {
-    const cells = [...(preset.rows[id] ?? '').replace(/\s/g, '')].map((c) => SYMBOLS[c] ?? 0);
+    const cells = [...(preset.rows[id] ?? '').replace(/[\s|]/g, '')].map((c) => SYMBOLS[c] ?? 0);
     p.notes[id] = Array.from({ length: total }, (_, i) => (cells.length ? cells[i % cells.length] : 0));
   }
   return p;

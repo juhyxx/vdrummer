@@ -1,11 +1,11 @@
 // The grid rows, top to bottom. `pan` places each piece in the stereo mix (−1 left, +1
 // right) where it is in a standard drum mix, from the drummer's seat as in the kit view:
 // kick and snare in the middle, hi-hat and crash to the left, toms sweeping from left to
-// the floor tom on the right, ride and the second crash on the right.
+// the floor tom on the right, ride and Crash R on the right.
 export const INSTRUMENTS = [
   { id: 'tamb', name: 'Tambourine', pan: 0.35 },
-  { id: 'crash', name: 'Crash', pan: -0.6 },
-  { id: 'crash2', name: 'Crash 2', pan: 0.45 },
+  { id: 'crash', name: 'Crash L', pan: -0.6 },
+  { id: 'crash2', name: 'Crash R', pan: 0.45 },
   { id: 'ride', name: 'Ride', pan: 0.6 },
   { id: 'hho', name: 'Open hat', pan: -0.5 },
   { id: 'hhc', name: 'Closed hat', pan: -0.5 },

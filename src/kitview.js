@@ -1,18 +1,18 @@
 const NS = 'http://www.w3.org/2000/svg';
 
-// The kit seen from above, the drummer sitting at the bottom. viewBox 0 0 400 320.
+// The kit seen from above, the drummer sitting at the bottom. viewBox 0 8 400 284.
 const KICK = { y: 120, h: 84 }; // bass drum shells; their x and width depend on how many there are
-const PEDAL = { y: 208, w: 22, h: 44 };
 const PIECES = {
   snare: { cx: 136, cy: 232, r: 36, lugs: 10 },
   tom1: { cx: 172, cy: 128, r: 27, lugs: 6 },
   tom2: { cx: 234, cy: 128, r: 30, lugs: 6 },
   tom3: { cx: 296, cy: 236, r: 42, lugs: 8 },
   hat: { cx: 60, cy: 205, r: 34 },
-  crash: { cx: 88, cy: 92, r: 52 },
-  crash2: { cx: 212, cy: 52, r: 42 },
+  // the crashes hang high on both sides; the ride sits lower, out over the floor tom
+  crash: { cx: 88, cy: 70, r: 50 },
+  crash2: { cx: 300, cy: 66, r: 46 },
   tamb: { cx: 368, cy: 236, r: 20 },
-  ride: { cx: 318, cy: 110, r: 58 },
+  ride: { cx: 334, cy: 160, r: 52 },
 };
 // How long each piece glows after a hit, ms.
 const GLOW_MS = { tamb: 240, crash2: 900, crash: 900, ride: 450, hho: 500, hhc: 160, hhp: 180, tom1: 300, tom2: 320, tom3: 360, snare: 220, rim: 150, kick: 260, kick2: 260 };
@@ -53,7 +53,7 @@ export class KitView {
 
   build() {
     const svg = this.svg;
-    svg.setAttribute('viewBox', '0 0 400 320');
+    svg.setAttribute('viewBox', '0 8 400 284');
     const defs = el('defs', {}, svg);
     const f = el('filter', { id: 'kit-glow', x: '-50%', y: '-50%', width: '200%', height: '200%' }, defs);
     el('feGaussianBlur', { stdDeviation: 3.5, result: 'blur' }, f);
@@ -70,25 +70,14 @@ export class KitView {
       return node;
     };
 
-    // throne
-    el('circle', { cx: 203, cy: 306, r: 24, class: 'throne' }, base);
-
-    // Bass drums: one with a double pedal (Kick 2 is the left pedal), or two side by side.
-    // setKicks() shows the one that fits the kit.
+    // Bass drums: one, which Kick 2 (a double pedal) lights too, or two side by side, splayed
+    // outwards as double-kick kits are set up. setKicks() shows the one that fits the kit.
+    // There are no pedals or stool: the hat pedal lights the hi-hat, dimly.
     const single = el('g', { class: 'kicks-1' }, base);
     this.kickDrum(single, ['kick', 'kick2'], 148, 110, 'Kick', glow);
-    this.pedal(single, 'kick2', 178, 'Kick 2 (left pedal)', glow);
-    this.pedal(single, 'kick', 206, 'Kick', glow);
     const double = el('g', { class: 'kicks-2' }, base);
-    this.kickDrum(double, ['kick2'], 140, 60, 'Kick 2', glow);
-    this.kickDrum(double, ['kick'], 206, 60, 'Kick', glow);
-    this.pedal(double, 'kick2', 159, 'Kick 2', glow);
-    this.pedal(double, 'kick', 225, 'Kick', glow);
-
-    // hi-hat pedal
-    const pedal = piece(base, 'hhp', 'Hat pedal');
-    el('rect', { x: 49, y: 250, width: 22, height: 44, rx: 5, class: 'pedal' }, pedal);
-    glow('hhp', 'rect', { x: 49, y: 250, width: 22, height: 44, rx: 5, class: 'glow-fill' });
+    this.kickDrum(double, ['kick2'], 138, 62, 'Kick 2', glow, -9);
+    this.kickDrum(double, ['kick'], 206, 62, 'Kick', glow, 9);
 
     for (const id of ['snare', 'tom1', 'tom2', 'tom3']) this.drum(base, id, PIECES[id], glow);
 
@@ -104,31 +93,29 @@ export class KitView {
     glow('hhp', 'circle', { cx: hat.cx, cy: hat.cy, r: hat.r, class: 'glow-fill' }, 0.45);
     glow('hho', 'circle', { cx: hat.cx, cy: hat.cy, r: hat.r + 7, class: 'glow-ring dashed' });
 
-    this.cymbal(base, 'crash', PIECES.crash, 'Crash');
+    this.cymbal(base, 'crash', PIECES.crash, 'Crash L');
     glow('crash', 'circle', { cx: PIECES.crash.cx, cy: PIECES.crash.cy, r: PIECES.crash.r, class: 'glow-fill' });
-    this.cymbal(base, 'crash2', PIECES.crash2, 'Crash 2');
+    this.cymbal(base, 'crash2', PIECES.crash2, 'Crash R');
     glow('crash2', 'circle', { cx: PIECES.crash2.cx, cy: PIECES.crash2.cy, r: PIECES.crash2.r, class: 'glow-fill' });
     this.cymbal(base, 'ride', PIECES.ride, 'Ride');
     glow('ride', 'circle', { cx: PIECES.ride.cx, cy: PIECES.ride.cy, r: PIECES.ride.r, class: 'glow-fill' });
 
     this.tambourine(base, PIECES.tamb, glow);
 
-    this.kitName = el('text', { x: 392, y: 312, 'text-anchor': 'end', class: 'kit-name' }, svg);
+    this.kitName = el('text', { x: 392, y: 288, 'text-anchor': 'end', class: 'kit-name' }, svg);
   }
 
-  /** A bass drum from above: its shell is a rectangle, with a head at the front and the back. */
-  kickDrum(parent, ids, x, w, title, glow) {
-    const g = piece(parent, ids[0], title);
+  /**
+   * A bass drum from above: its shell is a rectangle, with a head at the front and the back.
+   * `angle` (degrees, clockwise) turns it about the middle of its back head.
+   */
+  kickDrum(parent, ids, x, w, title, glow, angle = 0) {
+    const back = KICK.y + KICK.h;
+    const turned = el('g', angle ? { transform: `rotate(${angle} ${x + w / 2} ${back})` } : {}, parent);
+    const g = piece(turned, ids[0], title);
     el('rect', { x, y: KICK.y, width: w, height: KICK.h, rx: 8, class: 'shell' }, g);
-    for (const y of [KICK.y + 3, KICK.y + KICK.h - 3]) el('line', { x1: x + 4, x2: x + w - 4, y1: y, y2: y, class: 'hoop' }, g);
-    glow(ids, 'rect', { x, y: KICK.y, width: w, height: KICK.h, rx: 8, class: 'glow-fill' }, 1, parent);
-  }
-
-  pedal(parent, id, x, title, glow) {
-    const g = piece(parent, id, title);
-    el('rect', { x, y: PEDAL.y, width: PEDAL.w, height: PEDAL.h, rx: 5, class: 'pedal' }, g);
-    el('circle', { cx: x + PEDAL.w / 2, cy: PEDAL.y - 2, r: 5, class: 'beater' }, g);
-    glow(id, 'rect', { x, y: PEDAL.y, width: PEDAL.w, height: PEDAL.h, rx: 5, class: 'glow-fill' }, 1, parent);
+    for (const y of [KICK.y + 3, back - 3]) el('line', { x1: x + 4, x2: x + w - 4, y1: y, y2: y, class: 'hoop' }, g);
+    glow(ids, 'rect', { x, y: KICK.y, width: w, height: KICK.h, rx: 8, class: 'glow-fill' }, 1, turned);
   }
 
   drum(parent, id, { cx, cy, r, lugs }, glow) {
