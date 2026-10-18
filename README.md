@@ -83,7 +83,7 @@ Details and the full license notes are in [`samples/CREDITS.md`](samples/CREDITS
   Electro. See [Samples](#samples).
 - **Kit view**: the drums from above (the metal kit's two bass drums splayed outwards), each
   outlined in its colour and lighting up in it as it plays (brightest for accents; the hat
-  pedal lights the hi-hat dimly); press a piece to play it (shift-press the hi-hat for an
+  pedal lights its pedal and the hi-hat, dimly); press a piece to play it (shift-press the hi-hat for an
   open hat). The kit picker sits on top of it. *View: Kit* hides the view (the picker
   moves to the toolbar), and the grid takes the whole width.
 - The grid's cells grow to fill its screen, in width and (on wide screens) height.

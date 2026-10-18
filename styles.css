@@ -336,8 +336,9 @@ input[type="range"]::-moz-range-thumb {
 .kit-base .piece:hover .frame { stroke-opacity: 0.9; }
 .kit-base .rim-target { fill: none; stroke: transparent; stroke-width: 8; pointer-events: stroke; cursor: pointer; }
 /* each piece outlined faintly in its instrument's colour */
-.kit-base .piece .shell, .kit-base .piece .cym { stroke: var(--c); stroke-opacity: 0.45; }
-.kit-base .piece:hover .shell, .kit-base .piece:hover .cym { stroke-opacity: 0.9; }
+.kit-base .pedal { fill: rgba(255, 255, 255, 0.06); stroke-width: 1.5; }
+.kit-base .piece .shell, .kit-base .piece .cym, .kit-base .piece .pedal { stroke: var(--c); stroke-opacity: 0.45; }
+.kit-base .piece:hover .shell, .kit-base .piece:hover .cym, .kit-base .piece:hover .pedal { stroke-opacity: 0.9; }
 
 .glow-fill, .glow-ring { pointer-events: none; }
 .glow-fill { fill: currentColor; fill-opacity: 0.22; stroke: currentColor; stroke-width: 2.5; }

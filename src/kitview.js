@@ -72,12 +72,17 @@ export class KitView {
 
     // Bass drums: one, which Kick 2 (a double pedal) lights too, or two side by side, splayed
     // outwards as double-kick kits are set up. setKicks() shows the one that fits the kit.
-    // There are no pedals or stool: the hat pedal lights the hi-hat, dimly.
     const single = el('g', { class: 'kicks-1' }, base);
     this.kickDrum(single, ['kick', 'kick2'], 148, 110, 'Kick', glow);
     const double = el('g', { class: 'kicks-2' }, base);
     this.kickDrum(double, ['kick2'], 138, 62, 'Kick 2', glow, -9);
     this.kickDrum(double, ['kick'], 206, 62, 'Kick', glow, 9);
+
+    // The only pedal shown is the hi-hat's: it's an instrument of its own (the kick pedals
+    // would only repeat their drums).
+    const pedal = piece(base, 'hhp', 'Hat pedal');
+    el('rect', { x: 49, y: 246, width: 22, height: 40, rx: 5, class: 'pedal' }, pedal);
+    glow('hhp', 'rect', { x: 49, y: 246, width: 22, height: 40, rx: 5, class: 'glow-fill' });
 
     for (const id of ['snare', 'tom1', 'tom2', 'tom3']) this.drum(base, id, PIECES[id], glow);
 
