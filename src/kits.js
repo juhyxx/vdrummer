@@ -1,27 +1,28 @@
-// The grid rows, top to bottom. `pan` places each piece where the drummer hears it at full
-// width (−1 left, +1 right), for a right-handed kit: hi-hat on the left, floor tom on the
-// right. `spread` widens the piece itself (see DrumEngine): a delayed, softened copy of it
-// on the other side, at this level. The kicks stay in the middle, and narrow, for punch.
+// The grid rows, top to bottom. `pan` places each piece in the stereo mix (−1 left, +1
+// right) where it is in a standard drum mix, from the drummer's seat as in the kit view:
+// kick and snare in the middle, hi-hat and crash to the left, toms sweeping from left to
+// the floor tom on the right, ride on the right.
 export const INSTRUMENTS = [
-  { id: 'crash', name: 'Crash', pan: -0.85, spread: 0.45 },
-  { id: 'ride', name: 'Ride', pan: 0.8, spread: 0.45 },
-  { id: 'hho', name: 'Open hat', pan: -0.65, spread: 0.3 },
-  { id: 'hhc', name: 'Closed hat', pan: -0.65, spread: 0.2 },
-  { id: 'tom1', name: 'High tom', pan: -0.35, spread: 0.2 },
-  { id: 'tom2', name: 'Mid tom', pan: 0.25, spread: 0.2 },
-  { id: 'tom3', name: 'Floor tom', pan: 0.7, spread: 0.2 },
-  { id: 'snare', name: 'Snare', pan: -0.1, spread: 0.25 },
-  { id: 'rim', name: 'Side stick', pan: -0.1, spread: 0.15 },
-  { id: 'kick', name: 'Kick', pan: 0.04, spread: 0 },
-  { id: 'kick2', name: 'Kick 2', pan: -0.04, spread: 0 }, // left foot: a second bass drum, or a double pedal
-  { id: 'hhp', name: 'Hat pedal', pan: -0.65, spread: 0.15 },
+  { id: 'crash', name: 'Crash', pan: -0.6 },
+  { id: 'ride', name: 'Ride', pan: 0.6 },
+  { id: 'hho', name: 'Open hat', pan: -0.5 },
+  { id: 'hhc', name: 'Closed hat', pan: -0.5 },
+  { id: 'tom1', name: 'High tom', pan: -0.3 },
+  { id: 'tom2', name: 'Mid tom', pan: 0.1 },
+  { id: 'tom3', name: 'Floor tom', pan: 0.55 },
+  { id: 'snare', name: 'Snare', pan: 0 },
+  { id: 'rim', name: 'Side stick', pan: 0 },
+  { id: 'kick', name: 'Kick', pan: 0 },
+  { id: 'kick2', name: 'Kick 2', pan: 0 }, // left foot: a double pedal on the kick, or (metal) a second bass drum
+  { id: 'hhp', name: 'Hat pedal', pan: -0.5 },
 ];
 
 /**
  * Sound sets, recorded drums (see samples/CREDITS.md). Each kit has samples/<kit>/<instrument>.wav,
  * made by tools/build_samples.py; instruments listed in `soft` also have a softly played hit
  * (<instrument>-soft.wav) for ghost notes. `kicks` is the number of bass drums: with one,
- * Kick 2 is a double pedal on the same drum (`alias` plays another instrument's samples).
+ * Kick 2 is a double pedal on the same drum (`alias` plays another instrument's samples);
+ * with two they stand side by side, so `pan` moves them apart.
  * `labels` renames rows whose sound differs, and `room` is the size of the room the reverb
  * puts the kit in: how long its tail rings.
  */
@@ -33,6 +34,7 @@ export const KITS = {
     name: 'Metal',
     source: 'The Aasimonster (DrumGizmo)',
     kicks: 2,
+    pan: { kick: 0.1, kick2: -0.1 }, // right foot's drum on the right
     labels: { rim: 'Rimshot' },
     soft: [...ACOUSTIC_SOFT, 'kick2'],
     room: { seconds: 0.8 },

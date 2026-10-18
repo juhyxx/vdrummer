@@ -93,10 +93,10 @@ Details and the full license notes are in [`samples/CREDITS.md`](samples/CREDITS
 - **MIDI export**: *MIDI* downloads the rhythm as a Standard MIDI File, one loop with its
   tempo, meter and swing, on General MIDI drum notes (channel 10), so it plays in any DAW
   or drum plugin. Ghost, normal and accented hits are velocities 40, 90 and 120.
-- **Wide stereo**: each piece sits where the drummer hears it, crash far left, ride far
-  right, toms sweeping across, and cymbals, toms and snare are widened with a short, darker
-  echo on the other side (as overhead mics hear a kit); the kicks stay in the middle. *Width*
-  narrows it, down to mono.
+- **Stereo**: each piece is panned where a standard drum mix puts it, from the drummer's
+  seat as in the kit view: kick and snare in the middle, hi-hats (50 %) and crash (60 %)
+  left, toms from left (high, 30 %) to right (floor, 55 %), ride right (60 %). The metal
+  kit's two bass drums sit slightly apart; elsewhere Kick 2 is the same drum.
 - **Reverb** on the whole kit, from dry to a wash (default 30 %). Each kit sits in its own
   room, from a tight one for metal to a longer one for jazz and electro; the tail darkens as
   it decays, and the low end stays dry so the kick keeps its punch.

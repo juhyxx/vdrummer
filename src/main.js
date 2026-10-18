@@ -12,7 +12,7 @@ import { Sequencer } from './sequencer.js';
 import { VERSION } from './version.js';
 
 const KEYS = { settings: 'vdrummer.settings', pattern: 'vdrummer.pattern', library: 'vdrummer.library' };
-const DEFAULTS = { volume: 80, reverb: 30, width: 100, showKit: true };
+const DEFAULTS = { volume: 80, reverb: 30, showKit: true };
 const UNDO_LIMIT = 100;
 
 const $ = (id) => document.getElementById(id);
@@ -29,8 +29,6 @@ const els = {
   volumeValue: $('volumeValue'),
   reverb: $('reverb'),
   reverbValue: $('reverbValue'),
-  width: $('width'),
-  widthValue: $('widthValue'),
   meter: $('meter'),
   division: $('division'),
   barsDown: $('barsDown'),
@@ -114,7 +112,6 @@ document.addEventListener('visibilitychange', () => document.visibilityState ===
 const engine = new DrumEngine();
 engine.volume = settings.volume / 100;
 engine.reverbAmount = settings.reverb / 100;
-engine.width = settings.width / 100;
 const seq = new Sequencer(engine, () => pattern);
 const kitView = new KitView($('kit'), (id) => preview(id, 2));
 const grid = new Grid($('gridScroller'), {
@@ -573,14 +570,6 @@ els.reverb.addEventListener('input', () => {
   persist();
 });
 
-els.width.addEventListener('input', () => {
-  settings.width = Number(els.width.value);
-  els.widthValue.textContent = `${settings.width}%`;
-  setFill(els.width);
-  engine.setWidth(settings.width / 100);
-  persist();
-});
-
 els.meter.addEventListener('change', () => edit((p) => setBeats(p, Number(els.meter.value))));
 els.division.addEventListener('change', () => edit((p) => setDivision(p, Number(els.division.value))));
 els.barsDown.addEventListener('click', () => edit((p) => setBars(p, Math.max(1, p.bars - 1))));
@@ -648,9 +637,6 @@ showKitView();
 els.reverb.value = settings.reverb;
 els.reverbValue.textContent = `${settings.reverb}%`;
 setFill(els.reverb);
-els.width.value = settings.width;
-els.widthValue.textContent = `${settings.width}%`;
-setFill(els.width);
 fillRhythms();
 render();
 useKit();
