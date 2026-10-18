@@ -66,10 +66,12 @@ Details and the full license notes are in [`samples/CREDITS.md`](samples/CREDITS
   side stick, kick, kick 2, hi-hat pedal), one column per tick. Steps of 1/4, 1/8, 1/8 triplets,
   1/16 or 1/16 triplets; meters from 2/4 to 7/4. Changing the resolution moves every hit
   to the nearest new step.
-- **Hits** come in three levels, picked under *Hit* (or keys 1–3): ghost (dim), normal,
-  and accent (amber). Clicking a cell sets it to the current level or clears it if it
-  already has that level; drag with the mouse to paint. On touch, tap to set and drag
+- **Hits** come in three levels. Each click on a cell steps it through off → ghost (dim,
+  with a dot) → hit → accent (bright, with a white core) → off. Drag with the mouse to
+  paint the level the first cell got over others. On touch, tap to step a cell and drag
   to scroll.
+- **Colours**: every instrument has its own LED colour, by family (cymbals amber, hi-hats
+  cyan to blue, toms violet to magenta, snare lime, kicks red), in the grid and on the kit.
 - **Bars**: loop 1–16 bars. Click a bar number to select it, then *Copy to all* to fill
   every bar with it (build one bar, then copy), or *Clear*.
 - **Kits**: four sets of recorded drums. Metal is a death metal kit with two bass drums (the
@@ -79,8 +81,9 @@ Details and the full license notes are in [`samples/CREDITS.md`](samples/CREDITS
   softly played hits, not just quieter ones. Each piece is panned as the drummer hears it,
   with a light room reverb, and a closed hi-hat chokes an open one. The side stick row is a
   rimshot in the Metal kit and a clap in Electro. See [Samples](#samples).
-- **Kit view**: the drums from above. Each piece lights up as it plays (amber for accents);
-  press a piece to play it (shift-press the hi-hat for an open hat).
+- **Kit view**: the drums from above, each outlined in its colour and lighting up in it as
+  it plays (brightest for accents); press a piece to play it (shift-press the hi-hat for an
+  open hat).
 - **Rhythms**: 31 prepared grooves in four groups, each loading with its genre's kit and
   tempo: rock & pop, metal (with double bass split between the feet), jazz & latin (swing,
   waltz, bossa nova, samba, baião, salsa, cha-cha-chá, songo, Afro-Cuban 6/8) and

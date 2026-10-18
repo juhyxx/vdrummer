@@ -17,14 +17,14 @@ function make(tag, className, text) {
 }
 
 /**
- * The step grid: one row per instrument, one column per step. Clicking a cell sets it to
- * the current hit level, or clears it if it already has that level; dragging with the
- * mouse paints the same change over more cells. On touch a tap toggles and a drag scrolls.
+ * The step grid: one row per instrument, one column per step. Clicking a cell steps it
+ * through off → ghost → hit → accent → off; dragging with the mouse paints the level the
+ * first cell got over more cells. On touch a tap steps the cell and a drag scrolls.
  */
 export class Grid {
   /**
    * @param {HTMLElement} scroller  scrolling container the grid goes into
-   * @param {object} on  level() → current hit level; strokeStart(); paint(id, level); strokeEnd();
+   * @param {object} on  strokeStart(); paint(id, level); strokeEnd();
    *   preview(id); selectBar(bar)
    */
   constructor(scroller, on) {
@@ -84,12 +84,17 @@ export class Grid {
     this.cells = [];
     this.labels = [];
     INSTRUMENTS.forEach((inst, r) => {
+      // The row's wrapper takes no space in the grid; it only gives its cells their colour.
+      const wrap = make('div', 'row');
+      wrap.setAttribute('role', 'row');
+      wrap.style.setProperty('--c', `var(--i-${inst.id})`);
+      frag.append(wrap);
       const label = make('button', 'row-label', labelFor(inst));
       label.type = 'button';
       label.dataset.inst = inst.id;
       label.title = `${labelFor(inst)}: press to hear it`;
       this.labels.push(label);
-      frag.append(label);
+      wrap.append(label);
       const row = [];
       for (let i = 0; i < total; i++) {
         const s = i % spb;
@@ -102,7 +107,7 @@ export class Grid {
         c.dataset.i = i;
         c.dataset.v = p.notes[inst.id][i];
         row.push(c);
-        frag.append(c);
+        wrap.append(c);
       }
       this.cells.push(row);
     });
@@ -199,8 +204,7 @@ export class Grid {
 
   startStroke(cell) {
     const { id, i } = this.at(cell);
-    const level = this.on.level();
-    this.stroke = { value: this.p.notes[id][i] === level ? 0 : level, last: null };
+    this.stroke = { value: (this.p.notes[id][i] + 1) % 4, last: null };
     this.on.strokeStart();
     this.paint(cell);
   }

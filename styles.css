@@ -9,8 +9,7 @@
 
 :root {
   --led: hsl(84, 100%, 59%);
-  --led-warn: hsl(45, 100%, 59%);   /* accents */
-  --led-ghost: hsla(84, 100%, 59%, 0.32);
+  --led-warn: hsl(45, 100%, 59%);
   --led-off: rgba(255, 255, 255, 0.07);
   --led-dim: rgba(255, 255, 255, 0.35);
 
@@ -19,6 +18,21 @@
   --text: rgba(255, 255, 255, 0.8);
   --muted: rgba(255, 255, 255, 0.5);
   --faint: rgba(255, 255, 255, 0.3);
+
+  /* Each instrument's LED colour, by family: cymbals amber, hi-hats cyan to blue, toms violet
+     to magenta, snare lime and green, kicks red. Used in the grid and the kit view. */
+  --i-crash: hsl(45, 100%, 58%);
+  --i-ride: hsl(28, 100%, 60%);
+  --i-hho: hsl(176, 90%, 52%);
+  --i-hhc: hsl(194, 100%, 60%);
+  --i-hhp: hsl(214, 100%, 70%);
+  --i-tom1: hsl(266, 95%, 74%);
+  --i-tom2: hsl(288, 90%, 70%);
+  --i-tom3: hsl(312, 90%, 68%);
+  --i-snare: hsl(84, 100%, 59%);
+  --i-rim: hsl(132, 80%, 56%);
+  --i-kick: hsl(2, 100%, 63%);
+  --i-kick2: hsl(346, 100%, 72%);
 
   --pad: rgba(255, 255, 255, 0.05);       /* an empty grid cell */
   --pad-odd: rgba(255, 255, 255, 0.085);  /* empty cell in every other beat */
@@ -186,8 +200,6 @@ body {
 .seg .btn { padding: 0 12px; border-radius: 4px; }
 .seg .btn:first-child { border-radius: 2rem 4px 4px 2rem; padding-left: 16px; }
 .seg .btn:last-child { border-radius: 4px 2rem 2rem 4px; padding-right: 16px; }
-.seg .accent:has(input:checked) { color: var(--led-warn); text-shadow: 0 0 5px var(--led-warn); }
-.seg .ghost:has(input:checked) { color: hsla(84, 100%, 70%, 0.6); text-shadow: none; }
 
 select {
   appearance: none;
@@ -315,7 +327,9 @@ input[type="range"]::-moz-range-thumb {
 .kit-base .bell { fill: rgba(255, 255, 255, 0.08); stroke: rgba(255, 255, 255, 0.15); stroke-width: 1; }
 .kit-base .nut { fill: rgba(255, 255, 255, 0.4); }
 .kit-base .rim-target { fill: none; stroke: transparent; stroke-width: 8; pointer-events: stroke; cursor: pointer; }
-.kit-base .piece:hover .shell, .kit-base .piece:hover .cym, .kit-base .piece:hover .pedal { stroke: rgba(255, 255, 255, 0.4); }
+/* each piece outlined faintly in its instrument's colour */
+.kit-base .piece .shell, .kit-base .piece .cym, .kit-base .piece .pedal { stroke: var(--c); stroke-opacity: 0.45; }
+.kit-base .piece:hover .shell, .kit-base .piece:hover .cym, .kit-base .piece:hover .pedal { stroke-opacity: 0.9; }
 
 .glow-fill, .glow-ring { pointer-events: none; }
 .glow-fill { fill: currentColor; fill-opacity: 0.3; stroke: currentColor; stroke-width: 3; }
@@ -341,6 +355,8 @@ input[type="range"]::-moz-range-thumb {
   -webkit-user-select: none;
 }
 
+.row { display: contents; } /* carries the row's colour, --c, to its label and cells */
+
 .corner, .row-label { position: sticky; left: 0; z-index: 2; background: var(--screen); }
 
 .row-label {
@@ -357,7 +373,17 @@ input[type="range"]::-moz-range-thumb {
   white-space: nowrap;
   cursor: pointer;
 }
-.row-label:hover { color: var(--led); text-shadow: 0 0 5px var(--led); }
+.row-label::before { /* the row's colour */
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 0 5px var(--c);
+}
+.row-label:hover { color: var(--c); text-shadow: 0 0 5px var(--c); }
 .row-label:focus-visible { outline: 1px solid var(--led); outline-offset: -2px; }
 
 .bar-head {
@@ -398,17 +424,17 @@ input[type="range"]::-moz-range-thumb {
   background: rgba(255, 255, 255, 0.28);
 }
 .cell:hover { outline: 1px solid rgba(255, 255, 255, 0.25); outline-offset: -1px; }
-.cell[data-v="1"] { background: var(--led-ghost); box-shadow: none; }
-.cell[data-v="2"] { background: var(--led); box-shadow: 0 0 6px hsla(84, 100%, 59%, 0.7); }
-.cell[data-v="3"] { background: var(--led-warn); box-shadow: 0 0 8px hsla(45, 100%, 59%, 0.8); }
-.cell[data-v="1"]::after, .cell[data-v="3"]::after { /* a mark that tells ghost and accent apart without colour */
+/* hits in the row's colour: ghost dim with a dot, accent with a white-hot core */
+.cell[data-v="1"] { background: color-mix(in srgb, var(--c) 30%, transparent); box-shadow: none; }
+.cell[data-v="2"] { background: var(--c); box-shadow: 0 0 6px color-mix(in srgb, var(--c) 70%, transparent); }
+.cell[data-v="3"] { background: var(--c); box-shadow: 0 0 12px var(--c), 0 0 3px var(--c); }
+.cell[data-v="1"]::after, .cell[data-v="3"]::after {
   content: "";
   position: absolute;
-  inset: 35%;
-  border-radius: 1px;
-  background: rgba(0, 0, 0, 0.45);
+  border-radius: 50%;
 }
-.cell[data-v="1"]::after { inset: 40%; border-radius: 50%; background: rgba(255, 255, 255, 0.35); }
+.cell[data-v="1"]::after { inset: 40%; background: rgba(255, 255, 255, 0.35); }
+.cell[data-v="3"]::after { inset: 28%; border-radius: 2px; background: rgba(255, 255, 255, 0.85); box-shadow: 0 0 6px #fff; }
 
 .playhead {
   position: absolute;

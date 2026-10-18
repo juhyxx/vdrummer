@@ -12,12 +12,7 @@ import { Sequencer } from './sequencer.js';
 import { VERSION } from './version.js';
 
 const KEYS = { settings: 'vdrummer.settings', pattern: 'vdrummer.pattern', library: 'vdrummer.library' };
-const DEFAULTS = { volume: 80, level: 2 };
-const LEVELS = [
-  { level: 1, label: 'Ghost', cls: 'ghost' },
-  { level: 2, label: 'Hit', cls: '' },
-  { level: 3, label: 'Accent', cls: 'accent' },
-];
+const DEFAULTS = { volume: 80 };
 const UNDO_LIMIT = 100;
 
 const $ = (id) => document.getElementById(id);
@@ -39,7 +34,6 @@ const els = {
   barsUp: $('barsUp'),
   swing: $('swing'),
   swingValue: $('swingValue'),
-  levels: $('levels'),
   selBar: $('selBar'),
   copyBar: $('copyBar'),
   clearBar: $('clearBar'),
@@ -112,11 +106,10 @@ engine.volume = settings.volume / 100;
 const seq = new Sequencer(engine, () => pattern);
 const kitView = new KitView($('kit'), (id) => preview(id, 2));
 const grid = new Grid($('gridScroller'), {
-  level: () => settings.level,
   strokeStart,
   paint: onPaint,
   strokeEnd,
-  preview: (id) => preview(id, settings.level),
+  preview: (id) => preview(id, 2),
   selectBar,
 });
 const beatLeds = [];
@@ -515,18 +508,12 @@ function selectBar(bar) {
   grid.selectBar(bar);
 }
 
-function setLevel(level) {
-  settings.level = level;
-  for (const input of els.levels.querySelectorAll('input')) input.checked = Number(input.value) === level;
-  persist();
-}
-
 // ---------------------------------------------------------------- controls
 
 function makeToggles(container, name, items) {
-  for (const { value, label, cls } of items) {
+  for (const { value, label } of items) {
     const l = document.createElement('label');
-    l.className = `btn toggle ${cls ?? ''}`.trim();
+    l.className = 'btn toggle';
     const input = document.createElement('input');
     input.type = 'radio';
     input.name = name;
@@ -537,7 +524,6 @@ function makeToggles(container, name, items) {
 }
 
 makeToggles(els.kits, 'kit', KIT_IDS.map((id) => ({ value: id, label: KITS[id].name })));
-makeToggles(els.levels, 'level', LEVELS.map(({ level, label, cls }) => ({ value: level, label, cls })));
 for (const b of BEATS) els.meter.add(new Option(`${b}/4`, b));
 for (const { div, label } of DIVISIONS) els.division.add(new Option(label, div));
 
@@ -581,7 +567,6 @@ els.swing.addEventListener('input', () => {
   persist();
 });
 
-els.levels.addEventListener('change', (e) => setLevel(Number(e.target.value)));
 
 els.copyBar.addEventListener('click', () => {
   if (pattern.bars < 2) toast('Add bars first');
@@ -607,8 +592,6 @@ document.addEventListener('keydown', (e) => {
   } else if (mod && key === 'y') {
     e.preventDefault();
     redo();
-  } else if (!mod && !e.altKey && ['1', '2', '3'].includes(e.key)) {
-    setLevel(Number(e.key));
   }
 });
 
@@ -619,7 +602,6 @@ document.querySelector('.brand').title = `vdrummer ${VERSION}`;
 els.volume.value = settings.volume;
 els.volumeValue.textContent = `${settings.volume}%`;
 setFill(els.volume);
-setLevel(settings.level);
 fillRhythms();
 render();
 useKit();
