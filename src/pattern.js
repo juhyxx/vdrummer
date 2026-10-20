@@ -57,21 +57,14 @@ export function setBeats(p, beats) {
   p.beats = beats;
 }
 
+/** Changes the number of bars: fewer cuts the loop at its end, more repeat the loop into the new bars. */
 export function setBars(p, bars) {
   const len = bars * stepsPerBar(p);
   for (const { id } of INSTRUMENTS) {
     const src = p.notes[id];
-    p.notes[id] = Array.from({ length: len }, (_, i) => src[i] ?? 0);
+    p.notes[id] = Array.from({ length: len }, (_, i) => src[i % src.length]);
   }
   p.bars = bars;
-}
-
-export function copyBarToAll(p, bar) {
-  const spb = stepsPerBar(p);
-  for (const { id } of INSTRUMENTS) {
-    const src = p.notes[id].slice(bar * spb, (bar + 1) * spb);
-    p.notes[id] = Array.from({ length: totalSteps(p) }, (_, i) => src[i % spb]);
-  }
 }
 
 export function clearBar(p, bar) {

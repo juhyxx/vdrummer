@@ -72,8 +72,8 @@ Details and the full license notes are in [`samples/CREDITS.md`](samples/CREDITS
   to scroll.
 - **Colours**: every instrument has its own LED colour, by family (cymbals amber, hi-hats
   cyan to blue, toms violet to magenta, snare lime, kicks red), in the grid and on the kit.
-- **Bars**: loop 1–16 bars. Click a bar number to select it, then *Copy to all* to fill
-  every bar with it (build one bar, then copy), or *Clear*.
+- **Bars**: loop 1–16 bars. Adding bars repeats the loop into them (build one bar, then add
+  more and change them). Click a bar number to select it, then *Clear* it.
 - **Kits**: four sets of recorded drums. Metal is a death metal kit with two bass drums (the
   Aasimonster), Rock a Ludwig kit (AVL Red Zeppelin), Jazz a small TAMA bop kit (AVL Blonde
   Bop) with the snare played with brushes (hits tap, ghost notes sweep), and Electro a

@@ -69,7 +69,7 @@ export class Grid {
     for (let b = 0; b < p.bars; b++) {
       const h = make('button', 'bar-head', String(b + 1));
       h.type = 'button';
-      h.title = `Bar ${b + 1}: select it to copy or clear`;
+      h.title = `Bar ${b + 1}: select it to clear`;
       h.style.gridColumn = `span ${spb}`;
       h.classList.toggle('sel', b === selectedBar);
       h.addEventListener('click', () => this.on.selectBar(b));

@@ -8,7 +8,7 @@
 // `div` is the resolution in steps per beat: 2 = 1/8, 3 = 1/8 triplets, 4 = 1/16.
 
 export const GENRES = [
-  { id: 'rock', name: 'Rock & pop' },
+  { id: 'rock', name: 'Rock, pop & blues' },
   { id: 'metal', name: 'Metal' },
   { id: 'jazz', name: 'Jazz & latin' },
   { id: 'electronic', name: 'Electronic' },
@@ -85,6 +85,26 @@ const rock = [
       hhc: 'x-x x-x x-x x-x',
       snare: '--- X-- --- X--',
       kick: 'x-- --- x-x ---',
+    },
+  },
+  {
+    // the Chicago / Texas double shuffle: the left hand plays the shuffle on the snare too
+    id: 'bluesshuffle', name: 'Blues shuffle', tempo: 120, div: 3,
+    rows: {
+      ride: 'x-x x-x x-x x-x',
+      snare: 'g-g X-g g-g X-g',
+      kick: 'x-- x-- x-- x--',
+      hhp: '--- x-- --- x--',
+    },
+  },
+  {
+    // 12/8: ride triplets, ghosted pickups into the backbeat, the kick's pickups on the last triplets
+    id: 'slowblues', name: 'Slow blues', tempo: 60, div: 3,
+    rows: {
+      ride: 'Xxx Xxx Xxx Xxx',
+      snare: '--g X-- --g X-g',
+      kick: 'x-- --x x-- --x',
+      hhp: '--- x-- --- x--',
     },
   },
   {
@@ -188,6 +208,16 @@ const jazz = [
     },
   },
   {
+    // the swing groove at twice the speed on 16th triplets: the beat stays, the feel doubles
+    id: 'doubletime', name: 'Double-time swing', tempo: 100, div: 6,
+    rows: {
+      ride: 'x--x-x x--x-x x--x-x x--x-x',
+      hhp: '---x-- ---x-- ---x-- ---x--',
+      kick: 'g----- g----- g----- g-----',
+      snare: 'g--x-- g--x-- g--x-- g--x--',
+    },
+  },
+  {
     id: 'waltz', name: 'Jazz waltz', tempo: 150, beats: 3, div: 3,
     rows: {
       ride: 'x-- x-x x--',
@@ -240,6 +270,17 @@ const jazz = [
       rim: '-- x- -- xx',
       kick: 'x- -- x- --',
       hhp: '-- x- -- x-',
+    },
+  },
+  {
+    // ballroom tempo; 2-3 rumba clave on the side stick, the conga's open tones on the floor tom
+    id: 'rumba', name: 'Rumba', tempo: 104, div: 4, bars: 2,
+    rows: {
+      ride: 'X-x- X-x- X-x- X-x-',
+      rim: '---- x--- x--- ---- | x--- --x- ---- --x-',
+      tom3: '---- ---- ---- x-x-',
+      kick: 'x--- --x- x--- ----',
+      hhp: '---- x--- ---- x---',
     },
   },
   {

@@ -127,14 +127,36 @@ body {
 
 /* ------------------------------------------------------------- toolbars */
 
-.toolbar {
+.controls { display: flex; flex-direction: column; gap: 12px; padding: 0 20px 14px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 12px 14px; }
+/* too narrow for the playing groups on one row: all the groups flow together */
+@media (max-width: 1279px) {
+  .controls { flex-flow: row wrap; gap: 12px 14px; }
+  .toolbar { display: contents; }
+}
+
+/* a group of controls: a framed section of the panel, its name printed on the frame */
+.group {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
-  gap: 14px 24px;
-  padding: 4px 20px 16px;
+  gap: 12px 20px;
+  min-width: 0;
+  margin: 0;
+  padding: 6px 14px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.14);
 }
-.toolbar.edit { gap: 12px 20px; padding-top: 0; }
+.group legend {
+  padding: 0 8px;
+  margin-left: -4px;
+  color: var(--led-dim);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+.group legend output { margin-left: 4px; color: var(--text); }
 
 .module { display: flex; flex-direction: column; gap: 6px; }
 .module-row { display: flex; align-items: center; gap: 10px; min-height: 36px; }
@@ -184,16 +206,17 @@ body {
 }
 #save.pending::after { background: var(--led-warn); box-shadow: 0 0 5px var(--led-warn); }
 
-.start { min-width: 120px; min-height: 44px; font-size: 14px; }
+/* as tall as a labelled control beside it */
+.start { min-width: 168px; min-height: 56px; padding: 0 28px; gap: 12px; font-size: 16px; }
 .start::before { /* play triangle, a stop square while running */
   content: "";
-  width: 10px;
-  height: 12px;
+  width: 14px;
+  height: 16px;
   background: currentColor;
   clip-path: polygon(0 0, 100% 50%, 0 100%);
   filter: drop-shadow(0 0 3px currentColor);
 }
-.start.running::before { width: 10px; height: 10px; clip-path: none; }
+.start.running::before { width: 14px; height: 14px; clip-path: none; }
 
 .toggle input { position: absolute; opacity: 0; pointer-events: none; }
 
@@ -298,7 +321,7 @@ option, optgroup { background: #1c1c1c; color: #ddd; }
 input[type="range"] {
   --pct: 50%;
   appearance: none;
-  width: 130px;
+  width: 120px;
   height: 36px;
   margin: 0;
   background: transparent;
@@ -419,9 +442,9 @@ input[type="range"]::-moz-range-thumb {
 /* ------------------------------------------------------------- kit view */
 
 .kit-screen { display: flex; flex-direction: column; }
-.kit-screen .kit-picker { position: relative; z-index: 1; align-items: center; padding: 14px 14px 0; }
+.kit-screen .kit-picker { position: relative; z-index: 1; align-items: center; padding: 0 14px 14px; }
 .kit-screen .kit-picker .module-label { display: none; } /* the view itself says what it picks */
-#kit { flex: 1; min-height: 0; width: calc(100% - 24px); margin: 4px 12px 12px; overflow: visible; }
+#kit { flex: 1; min-height: 0; width: calc(100% - 24px); margin: 12px 12px 4px; overflow: visible; }
 
 .kit-base .piece { cursor: pointer; }
 #kit[data-kicks="2"] .kicks-1, #kit:not([data-kicks="2"]) .kicks-2 { display: none; }
@@ -511,7 +534,9 @@ input[type="range"]::-moz-range-thumb {
 }
 .bar-head::before { content: "Bar"; margin-right: 0.5em; color: var(--faint); }
 .bar-head:hover { color: var(--text); }
-.bar-head.sel { color: var(--led); border-bottom-color: var(--led); text-shadow: 0 0 5px var(--led); }
+/* a tight glow: a wide one blurs the small text */
+.bar-head.sel { color: var(--led); border-bottom-color: var(--led); text-shadow: 0 0 3px hsla(84, 100%, 59%, 0.6); }
+.bar-head.sel::before { color: inherit; }
 .bar-head:focus-visible { outline: 1px solid var(--led); outline-offset: -1px; }
 
 .count { color: var(--faint); font-size: 10px; text-align: center; line-height: 16px; }
@@ -624,8 +649,9 @@ dialog input[hidden] { display: none; }
 @media (max-width: 640px) {
   .top { flex-wrap: wrap; gap: 10px; padding: 12px 16px 6px; }
   .lcd { font-size: 32px; }
-  .toolbar { gap: 10px 16px; padding: 4px 16px 10px; }
-  .toolbar.edit { gap: 10px 14px; }
+  .controls { gap: 10px; padding: 0 16px 10px; }
+  .group { flex: 1 1 auto; gap: 10px 14px; padding: 4px 12px 12px; }
+  .start { flex: 1 1 auto; min-width: 120px; padding: 0 20px; }
   .module { gap: 4px; }
   .stage { --kit-h: 270px; margin: 0 8px 8px; grid-template-rows: var(--kit-h) 12px auto; }
   .stage.no-kit { row-gap: 10px; }
@@ -634,7 +660,7 @@ dialog input[hidden] { display: none; }
   input[type="range"] { width: 110px; }
   select { max-width: 200px; }
   .rhythm { flex: 1 1 100%; min-width: 0; }
-  .rhythm > .module-row { flex-wrap: wrap; } /* Save and Delete go under the picker */
+  .rhythm > .module-row { flex: 1 1 100%; flex-wrap: wrap; min-width: 0; } /* Save and Delete go under the picker */
   .rhythm-pick { flex: 1 1 100%; min-width: 0; }
   .rhythm .picker { flex: 1 1 auto; width: 100px; max-width: none; } /* a set width, so a long name can't widen the row */
   .rhythm .btn:not(.icon) { padding: 0 12px; }

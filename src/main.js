@@ -5,7 +5,7 @@ import { KitView } from './kitview.js';
 import { toMidi } from './midi.js';
 import {
   BEATS, DIVISIONS, MAX_BARS, TEMPO,
-  clearBar, copyBarToAll, deserialize, fromPreset, serialize, setBars, setBeats, setDivision, stepsPerBar,
+  clearBar, deserialize, fromPreset, serialize, setBars, setBeats, setDivision, stepsPerBar,
 } from './pattern.js';
 import { GENRES, PRESETS } from './presets.js';
 import { Sequencer } from './sequencer.js';
@@ -42,15 +42,15 @@ const els = {
   swing: $('swing'),
   swingValue: $('swingValue'),
   selBar: $('selBar'),
-  copyBar: $('copyBar'),
   clearBar: $('clearBar'),
   undo: $('undo'),
   redo: $('redo'),
   midi: $('midi'),
   stage: $('stage'),
   splitter: $('splitter'),
-  toolbar: $('toolbar'),
   rhythmModule: $('rhythmModule'),
+  sound: $('sound'),
+  volumeModule: $('volumeModule'),
   kitScreen: $('kitScreen'),
   kitPicker: $('kitPicker'),
   readout: $('readout'),
@@ -93,7 +93,7 @@ let pattern = saved ? deserialize(saved) : fromPreset(PRESETS[0]);
 const state = {
   source: saved ? String(saved.source ?? '') : `p:${PRESETS[0].id}`,
   dirty: saved ? Boolean(saved.dirty) : false,
-  bar: 0, // the bar selected for copy / clear
+  bar: 0, // the bar selected for clearing
 };
 
 let persistTimer = 0;
@@ -657,10 +657,6 @@ els.swing.addEventListener('input', () => {
 });
 
 
-els.copyBar.addEventListener('click', () => {
-  if (pattern.bars < 2) toast('Add bars first');
-  else if (edit((p) => copyBarToAll(p, state.bar))) toast(`Bar ${state.bar + 1} copied to all`);
-});
 els.clearBar.addEventListener('click', () => edit((p) => clearBar(p, state.bar)));
 els.undo.addEventListener('click', undo);
 els.redo.addEventListener('click', redo);
@@ -692,9 +688,9 @@ function showKitView() {
     if (px) els.stage.style.setProperty(name, `${px}px`);
     else els.stage.style.removeProperty(name);
   }
-  // The kit picker sits on the kit view; while the view is closed it waits in the toolbar.
-  if (open && els.kitPicker.parentNode !== els.kitScreen) els.kitScreen.prepend(els.kitPicker);
-  else if (!open && els.kitPicker.parentNode !== els.toolbar) els.toolbar.insertBefore(els.kitPicker, els.rhythmModule);
+  // The kit picker sits under the kit; while the view is closed it waits in the Sound group.
+  if (open && els.kitPicker.parentNode !== els.kitScreen) els.kitScreen.append(els.kitPicker);
+  else if (!open && els.kitPicker.parentNode !== els.sound) els.sound.insertBefore(els.kitPicker, els.volumeModule);
 
   const s = els.splitter;
   s.setAttribute('aria-orientation', dim === 'width' ? 'vertical' : 'horizontal');
